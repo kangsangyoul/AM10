@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-const stats = [
+const initialStats = [
   { label: 'AI Models', value: 52 },
   { label: 'At Risk Models', value: 9, color: 'text-red-400' },
   { label: 'AI-Flagged Issues', value: 5478 },
@@ -17,13 +17,42 @@ const models = [
   { name: 'Model F', percent: '54%', status: 'High', color: 'text-red-500' },
 ];
 
-const events = [
+const initialEvents = [
   { time: '14:03', model: 'Model A', event: 'High Drift', diagnosed: 'AI', status: '82%' },
   { time: '13:58', model: 'Model B', event: 'Anomalous Input', diagnosed: 'AI Autaltide', status: '83%' },
   { time: '19:58', model: 'Model D', event: 'Data Drift', diagnosed: 'AI Automatb', status: '84%' },
 ];
 
 const Dashboard = () => {
+  const [stats, setStats] = useState(initialStats);
+  const [events, setEvents] = useState(initialEvents);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStats((prev) =>
+        prev.map((s) => ({
+          ...s,
+          value:
+            typeof s.value === 'number'
+              ? s.value + Math.round(Math.random() * 2 - 1)
+              : s.value,
+        }))
+      );
+
+      setEvents((prev) => {
+        const newEvent = {
+          time: new Date().toLocaleTimeString().slice(0, 5),
+          model: 'Model X',
+          event: 'Automated Check',
+          diagnosed: 'System',
+          status: `${Math.floor(Math.random() * 10 + 90)}%`,
+        };
+        return [newEvent, ...prev.slice(0, 4)];
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="space-y-10">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
