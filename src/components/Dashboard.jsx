@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import InputData from './InputData';
 
 const initialStats = [
   { label: 'AI Models', value: 52 },
@@ -26,6 +27,7 @@ const initialEvents = [
 const Dashboard = () => {
   const [stats, setStats] = useState(initialStats);
   const [events, setEvents] = useState(initialEvents);
+  const [highlight, setHighlight] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -53,8 +55,28 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleData = () => {
+    setStats(initialStats.map((s) => ({
+      ...s,
+      value: Math.floor(Math.random() * 100),
+    })));
+    setEvents((prev) => [
+      {
+        time: new Date().toLocaleTimeString().slice(0, 5),
+        model: 'Input',
+        event: 'New Data',
+        diagnosed: 'Upload',
+        status: `${Math.floor(Math.random() * 10 + 90)}%`,
+      },
+      ...prev.slice(0, 4),
+    ]);
+    setHighlight(true);
+    setTimeout(() => setHighlight(false), 600);
+  };
+
   return (
     <div className="space-y-10">
+      <InputData onData={handleData} />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <div key={index} className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
@@ -69,7 +91,13 @@ const Dashboard = () => {
         <svg viewBox="0 0 600 100" className="w-full h-24">
           <circle cx="50" cy="50" r="10" fill="#14ffe9" />
           <line x1="60" y1="50" x2="200" y2="50" stroke="#14ffe9" strokeWidth="2" />
-          <circle cx="210" cy="50" r="20" fill="#14ffe9" />
+          <circle
+            cx="210"
+            cy="50"
+            r="20"
+            fill="#14ffe9"
+            className={highlight ? 'animate-ping' : ''}
+          />
           <line x1="230" y1="50" x2="400" y2="30" stroke="#14ffe9" strokeWidth="2" />
           <line x1="230" y1="50" x2="400" y2="70" stroke="#14ffe9" strokeWidth="2" />
           <circle cx="400" cy="30" r="10" fill="#14ffe9" />
