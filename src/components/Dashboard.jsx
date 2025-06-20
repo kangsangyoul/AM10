@@ -30,7 +30,7 @@ const Dashboard = () => {
         {stats.map((stat, index) => (
           <div key={index} className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
             <div className={`text-3xl font-bold ${stat.color || 'text-white'}`}>{stat.value}</div>
-            <div className="text-sm text-gray-400 mt-2 mt-1">{stat.label}</div>
+            <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -51,7 +51,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {models.map((model, index) => (
           <div key={index} className="bg-[#1a1f29] rounded-xl p-4 shadow">
-            <div className="text-sm text-gray-400 mt-2">{model.name}</div>
+            <div className="text-sm text-gray-400">{model.name}</div>
             <div className={`text-2xl font-bold ${model.color}`}>{model.percent}</div>
             <div className="text-xs mt-1">{model.status}</div>
           </div>
