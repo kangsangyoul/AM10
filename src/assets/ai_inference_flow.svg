@@ -1,0 +1,29 @@
+<svg viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Input node -->
+  <circle cx="60" cy="60" r="25" fill="#14ffe9" />
+  <text x="60" y="65" font-size="12" text-anchor="middle" fill="#000">Input</text>
+
+  <!-- arrow -->
+  <line x1="85" y1="60" x2="160" y2="60" stroke="#14ffe9" stroke-width="3" marker-end="url(#arrowhead)" />
+
+  <!-- Model node -->
+  <circle cx="190" cy="60" r="35" fill="#14ffe9" />
+  <text x="190" y="65" font-size="12" text-anchor="middle" fill="#000">Model</text>
+
+  <!-- branching arrows -->
+  <line x1="225" y1="60" x2="300" y2="30" stroke="#14ffe9" stroke-width="3" marker-end="url(#arrowhead)" />
+  <line x1="225" y1="60" x2="300" y2="90" stroke="#14ffe9" stroke-width="3" marker-end="url(#arrowhead)" />
+
+  <!-- Output nodes -->
+  <circle cx="320" cy="30" r="20" fill="#14ffe9" />
+  <text x="320" y="35" font-size="12" text-anchor="middle" fill="#000">Out</text>
+
+  <circle cx="320" cy="90" r="20" fill="#14ffe9" />
+  <text x="320" y="95" font-size="12" text-anchor="middle" fill="#000">Out</text>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#14ffe9" />
+    </marker>
+  </defs>
+</svg>

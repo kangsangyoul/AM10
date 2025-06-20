@@ -1,10 +1,11 @@
 import React from 'react';
 import { FaChartBar, FaRobot, FaBell, FaFileAlt, FaCog } from 'react-icons/fa';
+import logo from '../src/assets/auditmind_logo.svg';
 
 const Sidebar = () => {
   return (
     <aside className="w-64 bg-[#1a1f29] p-6 space-y-4">
-      <div className="text-2xl font-bold mb-8">AuditMind</div>
+      <img src={logo} alt="AuditMind logo" className="w-10 h-10 mb-8" />
       <nav className="flex flex-col space-y-4">
         <SidebarItem icon={<FaChartBar />} label="Dashboard" active />
         <SidebarItem icon={<FaRobot />} label="AI Models" />

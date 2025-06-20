@@ -1,5 +1,6 @@
 
 import React from 'react';
+import flowImage from '../src/assets/ai_inference_flow.svg';
 
 const stats = [
   { label: 'AI Models', value: 52 },
@@ -37,15 +38,7 @@ const Dashboard = () => {
 
       <div className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
         <h2 className="text-xl font-semibold mb-4">AI Inference Flow</h2>
-        <svg viewBox="0 0 600 100" className="w-full h-24">
-          <circle cx="50" cy="50" r="10" fill="#14ffe9" />
-          <line x1="60" y1="50" x2="200" y2="50" stroke="#14ffe9" strokeWidth="2" />
-          <circle cx="210" cy="50" r="20" fill="#14ffe9" />
-          <line x1="230" y1="50" x2="400" y2="30" stroke="#14ffe9" strokeWidth="2" />
-          <line x1="230" y1="50" x2="400" y2="70" stroke="#14ffe9" strokeWidth="2" />
-          <circle cx="400" cy="30" r="10" fill="#14ffe9" />
-          <circle cx="400" cy="70" r="10" fill="#14ffe9" />
-        </svg>
+        <img src={flowImage} alt="AI Inference Flow" className="w-full h-24 object-contain" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
