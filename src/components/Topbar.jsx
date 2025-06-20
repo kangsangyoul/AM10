@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Topbar = () => {
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setElapsed((e) => e + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="flex justify-between items-center p-4 border-b border-gray-700">
       <h1 className="text-2xl font-semibold">AI Risk Management Dashboard</h1>
       <div className="flex items-center gap-4">
-        <span className="text-sm text-gray-400">Updated 3s ago</span>
+        <span className="text-sm text-gray-400">Updated {elapsed}s ago</span>
         <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg font-medium">
           Download Report
         </button>
