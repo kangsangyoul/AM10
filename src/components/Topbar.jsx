@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
-const Topbar = () => {
+const Topbar = ({ lastUpdate }) => {
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setElapsed((e) => e + 1);
-    }, 1000);
+    const update = () => {
+      setElapsed(Math.floor((Date.now() - lastUpdate) / 1000));
+    };
+    update();
+    const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [lastUpdate]);
 
   return (
     <div className="flex justify-between items-center p-4 border-b border-gray-700">

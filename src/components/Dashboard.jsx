@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import InputData from './InputData';
 
 const initialStats = [
   { label: 'AI Models', value: 52 },
@@ -24,7 +23,7 @@ const initialEvents = [
   { time: '19:58', model: 'Model D', event: 'Data Drift', diagnosed: 'AI Automatb', status: '84%' },
 ];
 
-const Dashboard = () => {
+const Dashboard = ({ onUpdate }) => {
   const [stats, setStats] = useState(initialStats);
   const [events, setEvents] = useState(initialEvents);
   const [highlight, setHighlight] = useState(false);
@@ -51,32 +50,16 @@ const Dashboard = () => {
         };
         return [newEvent, ...prev.slice(0, 4)];
       });
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
-  const handleData = () => {
-    setStats(initialStats.map((s) => ({
-      ...s,
-      value: Math.floor(Math.random() * 100),
-    })));
-    setEvents((prev) => [
-      {
-        time: new Date().toLocaleTimeString().slice(0, 5),
-        model: 'Input',
-        event: 'New Data',
-        diagnosed: 'Upload',
-        status: `${Math.floor(Math.random() * 10 + 90)}%`,
-      },
-      ...prev.slice(0, 4),
-    ]);
-    setHighlight(true);
-    setTimeout(() => setHighlight(false), 600);
-  };
+      setHighlight(true);
+      setTimeout(() => setHighlight(false), 500);
+      onUpdate && onUpdate();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [onUpdate]);
 
   return (
     <div className="space-y-10">
-      <InputData onData={handleData} />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <div key={index} className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
