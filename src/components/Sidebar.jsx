@@ -1,44 +1,34 @@
 import React from 'react';
-import { FaChartBar, FaRobot, FaBell, FaFileAlt, FaCog } from 'react-icons/fa';
+import {
+  FaChartBar,
+  FaRobot,
+  FaBolt,
+  FaBell,
+  FaFileAlt,
+  FaCog,
+} from 'react-icons/fa';
+import SidebarMenu from './SidebarMenu';
 
 const items = [
-  { icon: <FaChartBar />, label: 'Dashboard' },
-  { icon: <FaRobot />, label: 'AI Models' },
-  { icon: <FaChartBar />, label: 'Risk Insights' },
-  { icon: <FaBell />, label: 'Alerts' },
-  { icon: <FaFileAlt />, label: 'Reports' },
-  { icon: <FaCog />, label: 'Settings' },
+  { icon: <FaChartBar />, label: 'Dashboard', to: '/' },
+  { icon: <FaRobot />, label: 'AI Models', to: '/ai-models' },
+  { icon: <FaBolt />, label: 'Risk Insights', to: '/risk-insights' },
+  { icon: <FaBell />, label: 'Alerts', to: '/alerts' },
+  { icon: <FaFileAlt />, label: 'Reports', to: '/reports' },
+  { icon: <FaCog />, label: 'Settings', to: '/settings' },
 ];
 
-const Sidebar = ({ activeItem, onSelect }) => {
+const Sidebar = () => {
   return (
-    <aside className="w-64 bg-[#1a1f29] p-6 space-y-4">
-      <div className="text-2xl font-bold mb-8">AuditMind</div>
-      <nav className="flex flex-col space-y-4">
+    <aside className="w-60 bg-[#14171c] pt-8 pb-4 px-3 flex flex-col">
+      <div className="text-center text-2xl font-bold text-white mb-10">AuditMind</div>
+      <nav className="flex flex-col gap-2 text-sm">
         {items.map((item) => (
-          <SidebarItem
-            key={item.label}
-            icon={item.icon}
-            label={item.label}
-            active={activeItem === item.label}
-            onClick={() => onSelect(item.label)}
-          />
+          <SidebarMenu key={item.label} {...item} />
         ))}
       </nav>
     </aside>
   );
 };
-
-const SidebarItem = ({ icon, label, active, onClick }) => (
-  <div
-    onClick={onClick}
-    className={`flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-[#2a2f3a] ${
-      active ? 'bg-[#2a2f3a] font-semibold' : ''
-    }`}
-  >
-    {icon}
-    <span>{label}</span>
-  </div>
-);
-
 export default Sidebar;
+
