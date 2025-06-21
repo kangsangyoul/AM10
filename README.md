@@ -12,8 +12,11 @@ npm install
 npm run dev
 ```
 
-3. Vercel 자동 배포
-- GitHub에 푸시하면 Vercel이 자동 배포합니다.
+   기본적으로 Vite 개발 서버가 `http://localhost:5173` 에서 실행됩니다.
+
+3. 배포
+- GitHub 저장소에 푸시하면 Vercel이 자동으로 배포합니다.
+- 배포가 완료되면 `https://<YOUR_PROJECT>.vercel.app` 형식의 URL에서 접속할 수 있습니다.
 - `vite` 기반 프로젝트입니다.
 
 ## 📁 구조
