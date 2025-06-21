@@ -1,5 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
+import Heatmap from './Heatmap';
+import ModelStatus from './ModelStatus';
 
 const initialStats = [
   { label: 'AI Models', value: 52 },
@@ -8,14 +10,6 @@ const initialStats = [
   { label: 'Data Drift Detected', value: 21 },
 ];
 
-const models = [
-  { name: 'Model A', percent: '52.5%', status: 'Active', color: 'text-cyan-400' },
-  { name: 'Model B', percent: '68%', status: 'AI Risk', color: 'text-yellow-400' },
-  { name: 'Model C', percent: '74%', status: 'Drift', color: 'text-orange-400' },
-  { name: 'Model D', percent: '58%', status: 'Aclotty', color: 'text-blue-400' },
-  { name: 'Model E', percent: '55%', status: 'AI Atleutt', color: 'text-red-400' },
-  { name: 'Model F', percent: '54%', status: 'High', color: 'text-red-500' },
-];
 
 const initialEvents = [
   { time: '14:03', model: 'Model A', event: 'High Drift', diagnosed: 'AI', status: '82%' },
@@ -88,14 +82,12 @@ const Dashboard = ({ onUpdate }) => {
         </svg>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {models.map((model, index) => (
-          <div key={index} className="bg-[#1a1f29] rounded-xl p-4 shadow">
-            <div className="text-sm text-gray-400">{model.name}</div>
-            <div className={`text-2xl font-bold ${model.color}`}>{model.percent}</div>
-            <div className="text-xs mt-1">{model.status}</div>
-          </div>
-        ))}
+
+      <ModelStatus />
+
+      <div className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
+        <h2 className="text-xl font-semibold mb-4">Risk Heatmap</h2>
+        <Heatmap />
       </div>
 
       <div className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
