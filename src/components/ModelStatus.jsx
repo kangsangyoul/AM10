@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 const initialModels = [
-  { name: 'Model A', percent: 52.5, status: 'Active' },
-  { name: 'Model B', percent: 68, status: 'AI Risk' },
-  { name: 'Model C', percent: 74, status: 'Drift' },
-  { name: 'Model D', percent: 58, status: 'Audit' },
-  { name: 'Model E', percent: 55, status: 'AI Alert' },
-  { name: 'Model F', percent: 54, status: 'High' },
+  { name: 'Fraud Detector', percent: 92.1, status: 'Active' },
+  { name: 'Recommendation', percent: 76.4, status: 'Monitoring' },
+  { name: 'Anomaly Watch', percent: 61.3, status: 'Drift' },
+  { name: 'Language Model', percent: 84.7, status: 'Risk' },
+  { name: 'Vision Classifier', percent: 49.5, status: 'Active' },
+  { name: 'Forecast Engine', percent: 73.2, status: 'Audit' },
 ];
 
 const getColor = (p) => {

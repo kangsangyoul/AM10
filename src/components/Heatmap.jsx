@@ -24,9 +24,11 @@ const Heatmap = () => {
       {cells.map((v, i) => (
         <div
           key={i}
-          className={`w-full h-full ${getColor(v)} transition-colors`}
+          className={`relative w-full h-full ${getColor(v)} flex items-center justify-center text-[10px] text-white transition-colors`}
           title={`${v}%`}
-        />
+        >
+          {v}
+        </div>
       ))}
     </div>
   );
