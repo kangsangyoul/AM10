@@ -17,9 +17,9 @@ npm run dev
 - `vite` 기반 프로젝트입니다.
 
 ## 📁 구조
-- `Dashboard.jsx`: 주요 UI (KPI, SVG, Heatmap, Table)
-- `Sidebar.jsx`: 사이드바 구성
-- `Topbar.jsx`: 상단 탭
+- `src/pages/Dashboard.jsx`: 주요 UI (KPI, SVG, Heatmap, Table)
+- `src/components/Sidebar.jsx`: 사이드바 구성
+- `src/components/Topbar.jsx`: 상단 탭
 
 ### ✨ 최근 변경 사항
 - 상단바에서 마지막 갱신 시간을 초 단위로 표시합니다.
