@@ -22,14 +22,15 @@ const getState = (score) => {
 };
 
 const colorFor = (score) => {
-  if (score >= 80) return '#ff5a47';
-  if (score >= 50) return '#ffb534';
-  return '#54e9f8';
+  if (score >= 80) return 'url(#danger)';
+  if (score >= 50) return 'url(#warning)';
+  return 'url(#emerald)';
 };
 
 const InferenceFlow = () => {
   const [scores, setScores] = useState(models.map(() => 50));
   const [history, setHistory] = useState([]);
+  const [nodePulses, setNodePulses] = useState(Array(6).fill(1));
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -37,6 +38,7 @@ const InferenceFlow = () => {
       setScores(next);
       const max = next.reduce((p, c, i) => (c > next[p] ? i : p), 0);
       setHistory((h) => [...h.slice(-29), next[max]]);
+      setNodePulses((p) => p.map(() => 1 + Math.random() * 0.15));
     }, 1000);
     return () => clearInterval(id);
   }, []);
@@ -55,6 +57,14 @@ const InferenceFlow = () => {
           <linearGradient id="emerald" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#54e9f8" />
             <stop offset="100%" stopColor="#34b4ff" />
+          </linearGradient>
+          <linearGradient id="warning" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#ffb534" />
+            <stop offset="100%" stopColor="#ffde3e" />
+          </linearGradient>
+          <linearGradient id="danger" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#ffb534" />
+            <stop offset="100%" stopColor="#ff5a47" />
           </linearGradient>
           <linearGradient id="iconGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#54e9f8" />
@@ -81,7 +91,7 @@ const InferenceFlow = () => {
         {models.map((m, i) => {
           const y = positions[i];
           const inputPath = `M 132 ${y} Q 238 ${(y + centerY) / 2 - (2 - i) * 8} 366 ${centerY}`;
-          return <FlowCurve key={`in-${m.key}`} d={inputPath} />;
+          return <FlowCurve key={`in-${m.key}`} d={inputPath} marker="url(#arrow)" />;
         })}
         {/* Output lines */}
         {models.map((m, i) => {
@@ -137,7 +147,13 @@ const InferenceFlow = () => {
             return (
               <g key={i}>
                 <line x1="0" y1="0" x2={x} y2={y} stroke="#54e9f8" strokeWidth="2" />
-                <circle cx={x} cy={y} r="4" fill="#54e9f8" />
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={4 * nodePulses[i]}
+                  fill="#54e9f8"
+                  style={{ transition: 'transform 0.3s' }}
+                />
               </g>
             );
           })}

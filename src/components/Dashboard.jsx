@@ -8,7 +8,6 @@ const initialStats = [
   { label: 'AI Models', value: 52, color: '#ffffff' },
   { label: 'At Risk Models', value: 9, color: '#ff5a47' },
   { label: 'AI-Flagged Issues', value: 5478, color: '#ffffff' },
-  { label: 'Data Drift Detected', value: 21, color: '#ffffff' },
 ];
 
 
@@ -62,24 +61,24 @@ const Dashboard = ({ onUpdate }) => {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <div
             key={index}
             className="bg-[#171f2e] rounded-xl p-3 flex flex-col justify-between"
-            style={{ width: 150, height: 60, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
+            style={{ width: 180, height: 70, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
           >
-            <div className="text-[1.75rem] font-bold" style={{ color: stat.color }}>
+            <div className="text-[2.1rem] font-bold" style={{ color: stat.color }}>
               {stat.value}
             </div>
-            <div className="text-[0.9rem] font-semibold" style={{ color: '#a2acc9' }}>
+            <div className="text-[1.03rem] font-semibold" style={{ color: '#a2acc9' }}>
               {stat.label}
             </div>
           </div>
         ))}
         <div
           className="bg-[#171f2e] rounded-xl p-3 flex flex-col"
-          style={{ width: 150, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
+          style={{ width: 180, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
         >
           <Heatmap />
         </div>
