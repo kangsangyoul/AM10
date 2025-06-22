@@ -16,10 +16,11 @@ const ModelIconWithLabel = ({ Icon, label, x, y, align = 'center', pulse = 1 }) 
       x={align === 'left' ? -24 : align === 'right' ? 24 : 0}
       y="34"
       textAnchor={align === 'left' ? 'end' : align === 'right' ? 'start' : 'middle'}
-      fontSize="11"
+      fontSize="13"
       fontWeight="bold"
       fill="#a2acc9"
       opacity="0.9"
+      style={{ whiteSpace: 'nowrap' }}
     >
       {label}
     </text>

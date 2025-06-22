@@ -6,13 +6,14 @@ import RiskBadgeCard from './RiskBadgeCard';
 import RiskGauge from './RiskGauge';
 import Toast from './Toast';
 
+// Model list with full descriptive names
 const models = [
-  { key: 'fraud', label: 'Fraud', icon: FiShield },
+  { key: 'fraud', label: 'Fraud Detector', icon: FiShield },
   { key: 'recommendation', label: 'Recommendation', icon: FiStar },
-  { key: 'anomaly', label: 'Anomaly', icon: FiAlertTriangle },
-  { key: 'language', label: 'Language', icon: FiBook },
-  { key: 'vision', label: 'Vision', icon: FiEye },
-  { key: 'forecast', label: 'Forecast', icon: FiBarChart2 },
+  { key: 'anomaly', label: 'Anomaly Watch', icon: FiAlertTriangle },
+  { key: 'language', label: 'Language Model', icon: FiBook },
+  { key: 'vision', label: 'Vision Classifier', icon: FiEye },
+  { key: 'forecast', label: 'Forecast Engine', icon: FiBarChart2 },
 ];
 
 const getState = (score) => {
@@ -84,7 +85,8 @@ const InferenceFlow = ({ onAlert }) => {
   const offsetY = -38;
   const centerY = 150 + offsetY;
   const iconStartY = 70 + offsetY;
-  const iconSpacing = 40;
+  // spacing between each model row to ensure labels fit
+  const iconSpacing = 46;
   const positions = models.map((_, i) => iconStartY + i * iconSpacing);
   const shiftX = -30; // move entire flow 30px to the left
   const centerX = 370 + shiftX; // central network position after shift
