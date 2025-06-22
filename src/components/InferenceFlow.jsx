@@ -43,6 +43,8 @@ const InferenceFlow = () => {
   const iconStartY = 70;
   const iconSpacing = 40;
   const positions = models.map((_, i) => iconStartY + i * iconSpacing);
+  const shiftX = -30; // move entire flow 30px to the left
+  const centerX = 370 + shiftX; // central network position after shift
 
   return (
     <div className="flex items-center justify-center font-[Pretendard,sans-serif] text-xs">
@@ -81,13 +83,13 @@ const InferenceFlow = () => {
         {/* Input lines */}
         {models.map((m, i) => {
           const y = positions[i];
-          const inputPath = `M 132 ${y} Q 238 ${(y + centerY) / 2 - (2 - i) * 8} 366 ${centerY}`;
+          const inputPath = `M ${132 + shiftX} ${y} Q ${238 + shiftX} ${(y + centerY) / 2 - (2 - i) * 8}  ${326} ${centerY}`;
           return <FlowCurve key={`in-${m.key}`} d={inputPath} />;
         })}
         {/* Output lines */}
         {models.map((m, i) => {
           const y = positions[i];
-          const outputPath = `M 410 ${centerY} Q 538 ${(y + centerY) / 2 + (i - 2) * 8} 666 ${y}`;
+          const outputPath = `M ${380 + shiftX} ${centerY} Q ${508 + shiftX} ${(y + centerY) / 2 + (i - 2) * 8} ${636 + shiftX} ${y}`;
           return (
             <FlowCurve
               key={`out-${m.key}`}
@@ -103,7 +105,7 @@ const InferenceFlow = () => {
             key={`in-icon-${m.key}`}
             Icon={m.icon}
             label={m.label}
-            x={110}
+            x={110 + shiftX}
             y={positions[i]}
             align="left"
           />
@@ -114,21 +116,21 @@ const InferenceFlow = () => {
             <ModelIconWithLabel
               Icon={m.icon}
               label={m.label}
-              x={660}
+              x={660 + shiftX}
               y={positions[i]}
               align="right"
             />
             <RiskBadgeCard
               score={scores[i]}
               state={getState(scores[i])}
-              x={745}
+              x={745 + shiftX}
               y={positions[i] - 16}
               highlight={i === maxIndex}
             />
           </g>
         ))}
         {/* Central network */}
-        <g transform={`translate(370,${centerY})`}>
+        <g transform={`translate(${centerX},${centerY})`}>
           <g className="ring-pulse" style={{ transformOrigin: 'center' }}>
             <circle r={33} stroke="#54e9f8" strokeWidth="2" fill="none" opacity="0.6" />
             <circle r={33} stroke="#54e9f8" strokeWidth="2" fill="none" />
@@ -147,7 +149,7 @@ const InferenceFlow = () => {
           })}
         </g>
       </svg>
-      <div className="ml-[-30px] scale-[1.15] flex flex-col items-center">
+      <div className="ml-[-60px] scale-[1.15] flex flex-col items-center">
         <span className="text-[1.1rem] font-bold text-[#a2acc9] mb-1">Risk Score</span>
         <RiskGauge score={scores[maxIndex]} />
       </div>
