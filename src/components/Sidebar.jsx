@@ -16,16 +16,38 @@ const Sidebar = ({ activeItem, onSelect }) => {
       <div className="flex items-center text-2xl font-bold mb-8">
         <svg
           className="w-10 h-10 drop-shadow-lg"
-          viewBox="0 0 24 24"
-          fill="url(#gradA)"
+          viewBox="0 0 56 56"
+          fill="url(#auditBlue)"
+          style={{ animation: 'blueGlow 2s infinite' }}
         >
           <defs>
-            <linearGradient id="gradA" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#34b4ff" />
-              <stop offset="100%" stopColor="#54a7f8" />
+            <linearGradient id="auditBlue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#b8e2ff" />
+              <stop offset="50%" stopColor="#34b4ff" />
+              <stop offset="100%" stopColor="#395cd6" />
             </linearGradient>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
-          <path d="M12 2l9 20h-4l-2-5H9l-2 5H3l9-20z" />
+          <style>{`
+            @keyframes blueGlow {
+              0% { filter: drop-shadow(0 0 8px #54a7f8aa); }
+              50% { filter: drop-shadow(0 0 26px #54a7f8ff) brightness(1.18) saturate(1.2); transform: scale(1.04); }
+              100% { filter: drop-shadow(0 0 8px #54a7f8aa); }
+            }
+          `}</style>
+          <path
+            d="M13 46 L28 10 L43 46 Q38 41 18 41 Z"
+            stroke="#ffffff"
+            strokeOpacity="0.2"
+            strokeWidth="2.5"
+            filter="url(#glow)"
+          />
         </svg>
         <span className="ml-2">AuditMind</span>
       </div>

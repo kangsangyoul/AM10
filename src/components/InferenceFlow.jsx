@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import RiskGauge from './RiskGauge';
 
 const nodeNames = [
   'Fraud Detector',
@@ -27,13 +28,19 @@ const genNodes = () =>
 
 const InferenceFlow = () => {
   const [score, setScore] = useState(50);
+  const [history, setHistory] = useState([50]);
   const [nodes, setNodes] = useState(genNodes());
   const [inputFlow, setInputFlow] = useState(500);
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setScore(Math.floor(Math.random() * 101));
+      const next = Math.floor(Math.random() * 101);
+      setScore(next);
+      setHistory((h) => {
+        const arr = [...h.slice(-19), next];
+        return arr;
+      });
       setInputFlow(Math.floor(Math.random() * 1000));
       setNodes(genNodes());
     }, 1000);
@@ -52,8 +59,18 @@ const InferenceFlow = () => {
     };
   };
 
+  const sparkWidth = 80;
+  const sparkHeight = 40;
+  const sparkPoints = history
+    .map((v, i) => {
+      const x = (i / (history.length - 1)) * sparkWidth;
+      const y = sparkHeight - (v / 100) * sparkHeight;
+      return `${x},${y}`;
+    })
+    .join(' ');
+
   return (
-    <div className="flex flex-col items-center font-[Pretendard,sans-serif]">
+    <div className="flex items-center font-[Pretendard,sans-serif]">
       <svg viewBox="0 0 700 140" width="100%" height="140" style={{ display: 'block' }}>
         <defs>
           <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
@@ -196,6 +213,22 @@ const InferenceFlow = () => {
           Output
         </text>
       </svg>
+      <div className="ml-4 flex flex-col items-center">
+        <RiskGauge score={score} />
+        <svg
+          viewBox={`0 0 ${sparkWidth} ${sparkHeight}`}
+          width={sparkWidth}
+          height={sparkHeight}
+          className="mt-2"
+        >
+          <polyline
+            fill="none"
+            stroke="#54a7f8"
+            strokeWidth="2"
+            points={sparkPoints}
+          />
+        </svg>
+      </div>
       {selected && (
         <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
