@@ -3,7 +3,6 @@ import { FaShieldAlt, FaStar, FaExclamationTriangle, FaBook, FaEye, FaChartLine 
 import FlowCurve from './FlowCurve';
 import ModelIconWithLabel from './ModelIconWithLabel';
 import RiskBadgeCard from './RiskBadgeCard';
-import DangerScoreCard from './DangerScoreCard';
 import RiskGauge from './RiskGauge';
 
 const models = [
@@ -78,7 +77,7 @@ const InferenceFlow = () => {
           <style>{`
             .flow-curve { animation: flowDash 1.2s linear infinite; filter: drop-shadow(0 0 10px #54e9f8cc); }
             @keyframes flowDash { to { stroke-dashoffset: -23; } }
-            .ring-pulse { transform-origin: center; animation: ringPulse 1.2s infinite; }
+            .ring-pulse { transform-box: fill-box; transform-origin: center; animation: ringPulse 1.2s infinite; }
             @keyframes ringPulse { 0%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.25);opacity:0;}100%{transform:scale(1);opacity:0.6;} }
           `}</style>
         </defs>
@@ -125,7 +124,7 @@ const InferenceFlow = () => {
             <RiskBadgeCard
               score={scores[i]}
               state={getState(scores[i])}
-              x={736}
+              x={744}
               y={positions[i] - 16}
               highlight={i === maxIndex}
             />
@@ -133,8 +132,10 @@ const InferenceFlow = () => {
         ))}
         {/* Central network */}
         <g transform={`translate(400,${centerY})`}>
-          <circle r={29} stroke="#54e9f8" strokeWidth="2" fill="none" opacity="0.6" />
-          <circle r={29} stroke="#54e9f8" strokeWidth="2" fill="none" className="ring-pulse" />
+          <g className="ring-pulse">
+            <circle r={29} stroke="#54e9f8" strokeWidth="2" fill="none" opacity="0.6" />
+            <circle r={29} stroke="#54e9f8" strokeWidth="2" fill="none" />
+          </g>
           <circle cx="0" cy="0" r="3" fill="#54e9f8" />
           {Array.from({ length: 6 }).map((_, i) => {
             const angle = (i / 6) * 2 * Math.PI;
@@ -159,7 +160,6 @@ const InferenceFlow = () => {
             points={history.map((v, i) => `${i * 3},${40 - (v / 100) * 40}`).join(' ')}
           />
         </svg>
-        <DangerScoreCard score={scores[maxIndex]} state={getState(scores[maxIndex])} />
       </div>
     </div>
   );
