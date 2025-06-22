@@ -5,17 +5,17 @@ const RiskBadgeCard = ({ score, state, x, y, highlight }) => (
     <rect
       x="0"
       y="0"
-      width="56"
-      height="32"
+      width="60"
+      height="34"
       rx="7"
       fill="#232b3b"
       stroke={highlight ? '#ff5a47' : 'none'}
       style={highlight ? { filter: 'drop-shadow(0 0 8px #ff5a47aa)' } : undefined}
     />
-    <text x="28" y="14" fontSize="1.1rem" fontWeight="bold" fill={highlight ? '#ff5a47' : '#54e9f8'} dy="0.35em">
+    <text x="30" y="16" fontSize="1.1rem" fontWeight="bold" fill={highlight ? '#ff5a47' : '#54e9f8'} dy="0.35em">
       {score}
     </text>
-    <text x="28" y="24" fontSize="10" fill="#a2acc9">
+    <text x="30" y="28" fontSize="10" fill="#a2acc9">
       {state}
     </text>
   </g>

@@ -28,14 +28,11 @@ const colorFor = (score) => {
 
 const InferenceFlow = () => {
   const [scores, setScores] = useState(models.map(() => 50));
-  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     const id = setInterval(() => {
       const next = models.map(() => Math.floor(Math.random() * 101));
       setScores(next);
-      const max = next.reduce((p, c, i) => (c > next[p] ? i : p), 0);
-      setHistory((h) => [...h.slice(-29), next[max]]);
     }, 1000);
     return () => clearInterval(id);
   }, []);
@@ -124,7 +121,7 @@ const InferenceFlow = () => {
             <RiskBadgeCard
               score={scores[i]}
               state={getState(scores[i])}
-              x={744}
+              x={740}
               y={positions[i] - 16}
               highlight={i === maxIndex}
             />
@@ -150,16 +147,8 @@ const InferenceFlow = () => {
           })}
         </g>
       </svg>
-      <div className="ml-4 flex items-center space-x-4">
+      <div className="ml-4">
         <RiskGauge score={scores[maxIndex]} />
-        <svg width="100" height="40" className="text-[#4dd9ff]">
-          <polyline
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            points={history.map((v, i) => `${i * 3},${40 - (v / 100) * 40}`).join(' ')}
-          />
-        </svg>
       </div>
     </div>
   );
