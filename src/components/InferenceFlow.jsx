@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { FaShieldAlt, FaStar, FaExclamationTriangle, FaBook, FaEye, FaChartLine } from 'react-icons/fa';
+import { FiShield, FiStar, FiAlertTriangle, FiBook, FiEye, FiBarChart2 } from 'react-icons/fi';
 import FlowCurve from './FlowCurve';
 import ModelIconWithLabel from './ModelIconWithLabel';
 import RiskBadgeCard from './RiskBadgeCard';
 import RiskGauge from './RiskGauge';
 
 const models = [
-  { key: 'fraud', label: 'Fraud', icon: FaShieldAlt },
-  { key: 'reco', label: 'Reco', icon: FaStar },
-  { key: 'anomaly', label: 'Anomaly', icon: FaExclamationTriangle },
-  { key: 'lang', label: 'Lang', icon: FaBook },
-  { key: 'vision', label: 'Vision', icon: FaEye },
-  { key: 'forecast', label: 'Forecast', icon: FaChartLine },
+  { key: 'fraud', label: 'Fraud', icon: FiShield },
+  { key: 'reco', label: 'Reco', icon: FiStar },
+  { key: 'anomaly', label: 'Anomaly', icon: FiAlertTriangle },
+  { key: 'lang', label: 'Lang', icon: FiBook },
+  { key: 'vision', label: 'Vision', icon: FiEye },
+  { key: 'forecast', label: 'Forecast', icon: FiBarChart2 },
 ];
 
 const getState = (score) => {
@@ -87,7 +87,7 @@ const InferenceFlow = () => {
         {/* Output lines */}
         {models.map((m, i) => {
           const y = positions[i];
-          const outputPath = `M 434 ${centerY} Q 562 ${(y + centerY) / 2 + (i - 2) * 8} 690 ${y}`;
+          const outputPath = `M 410 ${centerY} Q 538 ${(y + centerY) / 2 + (i - 2) * 8} 666 ${y}`;
           return (
             <FlowCurve
               key={`out-${m.key}`}
@@ -114,24 +114,24 @@ const InferenceFlow = () => {
             <ModelIconWithLabel
               Icon={m.icon}
               label={m.label}
-              x={690}
+              x={660}
               y={positions[i]}
               align="right"
             />
             <RiskBadgeCard
               score={scores[i]}
               state={getState(scores[i])}
-              x={740}
+              x={745}
               y={positions[i] - 16}
               highlight={i === maxIndex}
             />
           </g>
         ))}
         {/* Central network */}
-        <g transform={`translate(400,${centerY})`}>
-          <g className="ring-pulse">
-            <circle r={29} stroke="#54e9f8" strokeWidth="2" fill="none" opacity="0.6" />
-            <circle r={29} stroke="#54e9f8" strokeWidth="2" fill="none" />
+        <g transform={`translate(370,${centerY})`}>
+          <g className="ring-pulse" style={{ transformOrigin: 'center' }}>
+            <circle r={33} stroke="#54e9f8" strokeWidth="2" fill="none" opacity="0.6" />
+            <circle r={33} stroke="#54e9f8" strokeWidth="2" fill="none" />
           </g>
           <circle cx="0" cy="0" r="3" fill="#54e9f8" />
           {Array.from({ length: 6 }).map((_, i) => {
@@ -147,7 +147,8 @@ const InferenceFlow = () => {
           })}
         </g>
       </svg>
-      <div className="ml-4">
+      <div className="ml-[-30px] scale-[1.15] flex flex-col items-center">
+        <span className="text-[1.1rem] font-bold text-[#a2acc9] mb-1">Risk Score</span>
         <RiskGauge score={scores[maxIndex]} />
       </div>
     </div>

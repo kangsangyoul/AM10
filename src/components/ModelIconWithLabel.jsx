@@ -9,12 +9,12 @@ const ModelIconWithLabel = ({ Icon, label, x, y, align = 'center', pulse = 1 }) 
         transition: 'transform 0.3s',
       }}
     >
-      <circle cx="0" cy="0" r="16" fill="url(#iconGrad)" filter="url(#iconGlow)" />
-      <Icon x="-8" y="-8" size={16} color="#131926" />
+      <circle cx="0" cy="0" r="20" fill="url(#iconGrad)" filter="url(#iconGlow)" />
+      <Icon x="-10" y="-10" size={20} color="#131926" />
     </g>
     <text
       x={align === 'left' ? -18 : align === 'right' ? 18 : 0}
-      y="26"
+      y="34"
       textAnchor={align === 'left' ? 'end' : align === 'right' ? 'start' : 'middle'}
       fontSize="11"
       fontWeight="bold"
