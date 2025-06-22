@@ -61,7 +61,7 @@ const Heatmap = () => {
       </div>
       <div
         className="grid grid-cols-5"
-        style={{ width: 150, height: 150, gap: 4 }}
+        style={{ width: 140, height: 140, gap: 4 }}
       >
         {cells.map((cell, i) => (
           <div

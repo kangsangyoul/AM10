@@ -60,32 +60,32 @@ const Dashboard = ({ onUpdate }) => {
   }, [onUpdate]);
 
   return (
-    <div className="space-y-10">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="space-y-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-[#171f2e] rounded-xl p-6 flex flex-col justify-between"
-            style={{ width: 210, height: 90, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
+            className="bg-[#171f2e] rounded-xl p-4 flex flex-col justify-between"
+            style={{ width: 160, height: 70, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
           >
-            <div className="text-[2.4rem] font-bold" style={{ color: stat.color }}>
+            <div className="text-[1.8rem] font-bold" style={{ color: stat.color }}>
               {stat.value}
             </div>
-            <div className="text-sm mt-1" style={{ color: '#a2acc9' }}>
+            <div className="text-[0.96rem]" style={{ color: '#a2acc9' }}>
               {stat.label}
             </div>
           </div>
         ))}
         <div
-          className="bg-[#171f2e] rounded-xl p-4 flex flex-col"
-          style={{ width: 210, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
+          className="bg-[#171f2e] rounded-xl p-3 flex flex-col"
+          style={{ width: 160, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
         >
           <Heatmap />
         </div>
       </div>
 
-      <div className="bg-[#171f2e] rounded-xl p-6" style={{ boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}>
-        <h2 className="text-xl font-semibold mb-4">AI Inference Flow</h2>
+      <div className="bg-[#171f2e] rounded-xl p-4" style={{ boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}>
+        <h2 className="text-lg font-semibold mb-3">AI Inference Flow</h2>
         <InferenceFlow />
       </div>
 

@@ -43,13 +43,14 @@ const InferenceFlow = () => {
 
   const maxIndex = scores.reduce((p, c, i) => (c > scores[p] ? i : p), 0);
 
-  const iconStartY = 38;
-  const iconSpacing = 34.6;
+  const centerY = 130;
+  const iconStartY = 58;
+  const iconSpacing = 40;
   const positions = models.map((_, i) => iconStartY + i * iconSpacing);
 
   return (
     <div className="flex items-center justify-center font-[Pretendard,sans-serif] text-xs">
-      <svg viewBox="0 0 800 210" width="100%" height="210" className="block">
+      <svg viewBox="0 0 800 260" width="100%" height="260" className="block">
         <defs>
           <linearGradient id="emerald" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#54e9f8" />
@@ -79,13 +80,13 @@ const InferenceFlow = () => {
         {/* Input lines */}
         {models.map((m, i) => {
           const y = positions[i];
-          const inputPath = `M 132 ${y} Q 238 ${(y + 105) / 2 - (2 - i) * 8} 366 105`;
+          const inputPath = `M 132 ${y} Q 238 ${(y + centerY) / 2 - (2 - i) * 8} 366 ${centerY}`;
           return <FlowCurve key={`in-${m.key}`} d={inputPath} />;
         })}
         {/* Output lines */}
         {models.map((m, i) => {
           const y = positions[i];
-          const outputPath = `M 434 105 Q 562 ${(y + 105) / 2 + (i - 2) * 8} 690 ${y}`;
+          const outputPath = `M 434 ${centerY} Q 562 ${(y + centerY) / 2 + (i - 2) * 8} 690 ${y}`;
           return (
             <FlowCurve
               key={`out-${m.key}`}
@@ -127,7 +128,7 @@ const InferenceFlow = () => {
           </g>
         ))}
         {/* Central network */}
-        <g transform="translate(400,105)" className="ai">
+        <g transform={`translate(400,${centerY})`} className="ai">
           <circle cx="0" cy="0" r="3" fill="#54e9f8" />
           {Array.from({ length: 6 }).map((_, i) => {
             const angle = (i / 6) * 2 * Math.PI;
