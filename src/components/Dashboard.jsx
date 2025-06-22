@@ -23,6 +23,10 @@ const Dashboard = ({ onUpdate }) => {
   const [events, setEvents] = useState(initialEvents);
   const [rowPulse, setRowPulse] = useState(false);
 
+  const addEvent = (evt) => {
+    setEvents((prev) => [evt, ...prev.slice(0, 4)]);
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setStats((prev) =>
@@ -87,7 +91,7 @@ const Dashboard = ({ onUpdate }) => {
 
       <div className="bg-[#171f2e] rounded-xl p-4" style={{ boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}>
         <h2 className="text-lg font-semibold mb-3">AI Inference Flow</h2>
-        <InferenceFlow />
+        <InferenceFlow onAlert={addEvent} />
       </div>
 
       <div>

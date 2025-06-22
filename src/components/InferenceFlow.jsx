@@ -4,6 +4,7 @@ import FlowCurve from './FlowCurve';
 import ModelIconWithLabel from './ModelIconWithLabel';
 import RiskBadgeCard from './RiskBadgeCard';
 import RiskGauge from './RiskGauge';
+import Toast from './Toast';
 
 const models = [
   { key: 'fraud', label: 'Fraud', icon: FiShield },
@@ -26,8 +27,11 @@ const colorFor = (score) => {
   return 'url(#emerald)';
 };
 
-const InferenceFlow = () => {
+const InferenceFlow = ({ onAlert }) => {
   const [scores, setScores] = useState(models.map(() => 50));
+  const [toast, setToast] = useState(null);
+  const [processing, setProcessing] = useState(false);
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -36,6 +40,43 @@ const InferenceFlow = () => {
     }, 1000);
     return () => clearInterval(id);
   }, []);
+
+  useEffect(() => {
+    setHistory((h) => [...h.slice(-19), Math.max(...scores)]);
+
+    const maxScore = Math.max(...scores);
+    if (!processing && maxScore >= 80) {
+      setProcessing(true);
+      setToast({ message: 'AI 자동 처리 중...', type: 'info' });
+      setTimeout(() => {
+        const success = Math.random() < 0.5;
+        if (success) {
+          setToast({ message: '경보 해결 완료', type: 'success' });
+          onAlert &&
+            onAlert({
+              time: new Date().toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+              }),
+              model: models[scores.indexOf(maxScore)].label,
+              event: 'Risk Mitigated',
+              diagnosed: 'AI Agent',
+              status: `${maxScore}%`,
+            });
+          setScores((prev) =>
+            prev.map((s, i) => (i === scores.indexOf(maxScore) ? Math.max(0, s - 20) : s))
+          );
+        } else {
+          setToast({ message: '조치 실패', type: 'error' });
+        }
+        setTimeout(() => {
+          setToast(null);
+          setProcessing(false);
+        }, 2000);
+      }, 2000);
+    }
+  }, [scores, processing, onAlert]);
 
   const maxIndex = scores.reduce((p, c, i) => (c > scores[p] ? i : p), 0);
 
@@ -152,7 +193,11 @@ const InferenceFlow = () => {
       <div className="ml-[-40px] scale-[1.15] flex flex-col items-center">
         <span className="text-[1.1rem] font-bold text-[#a2acc9] mb-1">Risk Score</span>
         <RiskGauge score={scores[maxIndex]} />
+        <svg viewBox="0 0 100 30" className="w-24 h-8 mt-1" fill="none" stroke="#54a7f8" strokeWidth="2">
+          <polyline points={history.map((v,i)=>`${i*5},${30 - v*0.3}`).join(' ')} />
+        </svg>
       </div>
+      {toast && <Toast message={toast.message} type={toast.type} />}
     </div>
   );
 };
