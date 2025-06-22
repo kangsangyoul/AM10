@@ -4,9 +4,9 @@ const generateCells = () =>
   Array.from({ length: 25 }, () => Math.floor(Math.random() * 101));
 
 const getColor = (value) => {
-  if (value > 80) return 'bg-red-500';
-  if (value > 50) return 'bg-yellow-500';
-  return 'bg-blue-500';
+  if (value > 80) return '#ff5a47';
+  if (value > 50) return '#54a7f8';
+  return '#233a56';
 };
 
 const Heatmap = () => {
@@ -24,7 +24,8 @@ const Heatmap = () => {
       {cells.map((v, i) => (
         <div
           key={i}
-          className={`relative w-full h-full ${getColor(v)} flex items-center justify-center text-[10px] text-white transition-colors`}
+          className="relative w-full h-full flex items-center justify-center text-[10px] text-white transition-colors"
+          style={{ backgroundColor: getColor(v), transitionDuration: '0.2s' }}
           title={`${v}%`}
         >
           {v}

@@ -5,9 +5,9 @@ import ModelStatus from './ModelStatus';
 import Heatmap from './Heatmap';
 
 const initialStats = [
-  { label: 'AI Models', value: 52, bg: 'bg-blue-900', text: 'text-blue-200' },
-  { label: 'At Risk Models', value: 9, bg: 'bg-yellow-900', text: 'text-yellow-200' },
-  { label: 'Data Drift Detected', value: 21, bg: 'bg-red-900', text: 'text-red-200' },
+  { label: 'AI Models', value: 52 },
+  { label: 'At Risk Models', value: 9 },
+  { label: 'Data Drift Detected', value: 21 },
 ];
 
 
@@ -60,18 +60,21 @@ const Dashboard = ({ onUpdate }) => {
     <div className="space-y-10">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <div key={index} className={`${stat.bg} rounded-xl p-6 shadow-lg`}>
-            <div className={`text-3xl font-bold ${stat.text}`}>{stat.value}</div>
+          <div
+            key={index}
+            className="bg-[#171f2e] rounded-xl p-6 shadow-lg"
+          >
+            <div className="text-3xl font-bold text-white">{stat.value}</div>
             <div className="text-sm text-gray-300 mt-1">{stat.label}</div>
           </div>
         ))}
-        <div className="bg-[#1a1f29] rounded-xl p-4 shadow-lg flex flex-col items-center justify-center">
+        <div className="bg-[#171f2e] rounded-xl p-4 shadow-lg flex flex-col items-center justify-center">
           <h2 className="text-sm font-semibold mb-2">Risk Heatmap</h2>
           <Heatmap />
         </div>
       </div>
 
-      <div className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
+      <div className="bg-[#171f2e] rounded-xl p-6 shadow-lg">
         <h2 className="text-xl font-semibold mb-4">AI Inference Flow</h2>
         <InferenceFlow />
       </div>
@@ -81,7 +84,7 @@ const Dashboard = ({ onUpdate }) => {
         <ModelStatus />
       </div>
 
-      <div className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
+      <div className="bg-[#171f2e] rounded-xl p-6 shadow-lg">
         <h2 className="text-xl font-semibold mb-4">Event Log</h2>
         <table className="w-full text-sm">
           <thead className="text-gray-400 border-b border-gray-700">
@@ -97,7 +100,7 @@ const Dashboard = ({ onUpdate }) => {
             {events.map((e, index) => (
               <tr
                 key={index}
-                className={`border-b border-gray-800 ${index === 0 && rowPulse ? 'bg-gray-800' : ''}`}
+                className={`border-b border-gray-800 ${index === 0 && rowPulse ? 'bg-[#1e2536]' : ''}`}
               >
                 <td className="py-2">{e.time}</td>
                 <td className="py-2">{e.model}</td>

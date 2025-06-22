@@ -10,9 +10,9 @@ const initialModels = [
 ];
 
 const getColor = (p) => {
-  if (p > 80) return 'text-red-500';
-  if (p > 60) return 'text-yellow-400';
-  return 'text-blue-400';
+  if (p > 80) return '#ff5a47';
+  if (p > 60) return '#ffb534';
+  return '#54a7f8';
 };
 
 const ModelStatus = () => {
@@ -33,10 +33,12 @@ const ModelStatus = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {models.map((model, i) => (
-        <div key={i} className="bg-[#1a1f29] rounded-xl p-4 shadow">
+        <div key={i} className="bg-[#171f2e] rounded-xl p-4 shadow">
           <div className="text-sm text-gray-400">{model.name}</div>
-          <div className={`text-2xl font-bold ${getColor(model.percent)}`}>{model.percent.toFixed(1)}%</div>
-          <div className="text-xs mt-1">{model.status}</div>
+          <div className="text-2xl font-bold" style={{ color: getColor(model.percent) }}>
+            {model.percent.toFixed(1)}%
+          </div>
+          <div className="text-xs mt-1 text-[#a2acc9]">{model.status}</div>
         </div>
       ))}
     </div>

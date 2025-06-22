@@ -5,7 +5,7 @@ import Dashboard from './components/Dashboard';
 
 const App = () => {
   return (
-    <div className="flex h-screen bg-[#0e1116] text-white">
+    <div className="flex h-screen bg-[#131926] text-white">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Topbar />

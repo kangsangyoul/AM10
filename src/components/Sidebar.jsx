@@ -12,13 +12,19 @@ const items = [
 
 const Sidebar = ({ activeItem, onSelect }) => {
   return (
-    <aside className="w-64 bg-[#1a1f29] p-6 space-y-4">
+    <aside className="w-64 bg-[#1a2235] p-6 space-y-4">
       <div className="flex items-center text-2xl font-bold mb-8">
         <svg
-          className="w-8 h-8 text-blue-400 drop-shadow-lg"
+          className="w-10 h-10 drop-shadow-lg"
           viewBox="0 0 24 24"
-          fill="currentColor"
+          fill="url(#gradA)"
         >
+          <defs>
+            <linearGradient id="gradA" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#34b4ff" />
+              <stop offset="100%" stopColor="#54a7f8" />
+            </linearGradient>
+          </defs>
           <path d="M12 2l9 20h-4l-2-5H9l-2 5H3l9-20z" />
         </svg>
         <span className="ml-2">AuditMind</span>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-const getColor = (score) => {
-  if (score > 80) return 'text-red-500';
-  if (score > 50) return 'text-yellow-400';
-  return 'text-blue-400';
+const colorHex = (score) => {
+  if (score > 80) return '#ff5a47';
+  if (score > 50) return '#54a7f8';
+  return '#233a56';
 };
 
 const RiskGauge = ({ score: external }) => {
@@ -25,7 +25,13 @@ const RiskGauge = ({ score: external }) => {
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-24 h-24">
-        <svg viewBox="0 0 36 36" className="w-full h-full rotate-[-90deg]">
+        <svg viewBox="0 0 36 36" className="w-full h-full rotate-[-90deg]" style={{ color: colorHex(score) }}>
+          <defs>
+            <linearGradient id="riskGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#ffb534" />
+              <stop offset="100%" stopColor="#ff5a47" />
+            </linearGradient>
+          </defs>
           <path
             d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
@@ -38,18 +44,21 @@ const RiskGauge = ({ score: external }) => {
             d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831"
             fill="none"
-            stroke="currentColor"
+            stroke={score > 80 ? 'url(#riskGrad)' : 'currentColor'}
             strokeWidth="2"
             strokeDasharray={`${score}, 100`}
           />
         </svg>
         <div
-          className={`absolute inset-0 flex items-center justify-center text-xl font-bold ${getColor(score)}`}
+          className="absolute inset-0 flex items-center justify-center text-xl font-bold"
+          style={{ color: colorHex(score) }}
         >
           {score}%
         </div>
       </div>
-      <span className={`mt-2 font-medium ${getColor(score)}`}>Risk Score</span>
+      <span className="mt-2 font-medium" style={{ color: colorHex(score) }}>
+        Risk Score
+      </span>
     </div>
   );
 };
