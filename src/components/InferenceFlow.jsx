@@ -43,14 +43,14 @@ const InferenceFlow = () => {
 
   const maxIndex = scores.reduce((p, c, i) => (c > scores[p] ? i : p), 0);
 
-  const centerY = 130;
-  const iconStartY = 58;
+  const centerY = 150;
+  const iconStartY = 70;
   const iconSpacing = 40;
   const positions = models.map((_, i) => iconStartY + i * iconSpacing);
 
   return (
     <div className="flex items-center justify-center font-[Pretendard,sans-serif] text-xs">
-      <svg viewBox="0 0 800 260" width="100%" height="260" className="block">
+      <svg viewBox="0 0 800 300" width="100%" height="300" className="block">
         <defs>
           <linearGradient id="emerald" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#54e9f8" />
@@ -92,7 +92,7 @@ const InferenceFlow = () => {
               key={`out-${m.key}`}
               d={outputPath}
               color={colorFor(scores[i])}
-              width={scores[i] >= 80 ? 6 : 4}
+              width={scores[i] >= 80 ? 5 : 3}
               marker="url(#arrow)"
             />
           );

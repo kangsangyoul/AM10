@@ -41,7 +41,7 @@ const ModelStatus = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
       {models.map((model, i) => (
         <div key={i} className="bg-[#192232] rounded-xl p-4 shadow">
           <div className="text-sm text-gray-400">{model.name}</div>

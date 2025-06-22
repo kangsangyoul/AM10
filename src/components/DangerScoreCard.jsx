@@ -5,7 +5,7 @@ const DangerScoreCard = ({ score, state }) => (
     className="flex flex-col items-center justify-center text-center bg-[#262e3e] rounded-lg"
     style={{ width: 72, height: 48, boxShadow: '0 0 12px rgba(255,90,71,0.6)', animation: 'heart 1.2s infinite' }}
   >
-    <div className="text-[2rem] font-bold" style={{ color: '#ff5a47' }}>
+    <div className="text-[2.2rem] font-bold" style={{ color: '#ff5a47' }}>
       {score}
     </div>
     <div className="text-xs text-[#a2acc9] mt-[-4px]">{state}</div>

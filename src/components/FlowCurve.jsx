@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FlowCurve = ({ d, color = 'url(#emerald)', width = 4, marker = '' }) => (
+const FlowCurve = ({ d, color = 'url(#emerald)', width = 3, marker = '' }) => (
   <path
     d={d}
     stroke={color}
