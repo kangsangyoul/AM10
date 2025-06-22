@@ -1,32 +1,26 @@
 
 import React, { useState, useEffect } from 'react';
+import InferenceFlow from './InferenceFlow';
+import ModelStatus from './ModelStatus';
+import Heatmap from './Heatmap';
 
 const initialStats = [
-  { label: 'AI Models', value: 52 },
-  { label: 'At Risk Models', value: 9, color: 'text-red-400' },
-  { label: 'AI-Flagged Issues', value: 5478 },
-  { label: 'Data Drift Detected', value: 21 },
+  { label: 'AI Models', value: 52, color: '#ffffff' },
+  { label: 'At Risk Models', value: 9, color: '#ff5a47' },
+  { label: 'AI-Flagged Issues', value: 5478, color: '#ffffff' },
 ];
 
-const models = [
-  { name: 'Model A', percent: '52.5%', status: 'Active', color: 'text-cyan-400' },
-  { name: 'Model B', percent: '68%', status: 'AI Risk', color: 'text-yellow-400' },
-  { name: 'Model C', percent: '74%', status: 'Drift', color: 'text-orange-400' },
-  { name: 'Model D', percent: '58%', status: 'Aclotty', color: 'text-blue-400' },
-  { name: 'Model E', percent: '55%', status: 'AI Atleutt', color: 'text-red-400' },
-  { name: 'Model F', percent: '54%', status: 'High', color: 'text-red-500' },
-];
 
 const initialEvents = [
-  { time: '14:03', model: 'Model A', event: 'High Drift', diagnosed: 'AI', status: '82%' },
-  { time: '13:58', model: 'Model B', event: 'Anomalous Input', diagnosed: 'AI Autaltide', status: '83%' },
-  { time: '19:58', model: 'Model D', event: 'Data Drift', diagnosed: 'AI Automatb', status: '84%' },
+  { time: '10:12 AM', model: 'Fraud Detector', event: 'Drift Detected', diagnosed: 'System Monitor', status: '91%' },
+  { time: '9:05 AM', model: 'Recommendation', event: 'Spike in Traffic', diagnosed: 'Auto Audit', status: '87%' },
+  { time: '8:43 AM', model: 'Language Model', event: 'High Risk', diagnosed: 'Human Analyst', status: '89%' },
 ];
 
 const Dashboard = ({ onUpdate }) => {
   const [stats, setStats] = useState(initialStats);
   const [events, setEvents] = useState(initialEvents);
-  const [highlight, setHighlight] = useState(false);
+  const [rowPulse, setRowPulse] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,64 +35,66 @@ const Dashboard = ({ onUpdate }) => {
       );
 
       setEvents((prev) => {
+        const models = ['Fraud Detector', 'Recommendation', 'Language Model'];
+        const events = ['Automated Check', 'Data Drift', 'Spike'];
+        const diagnosers = ['System Monitor', 'Auto Audit', 'Human Analyst'];
         const newEvent = {
-          time: new Date().toLocaleTimeString().slice(0, 5),
-          model: 'Model X',
-          event: 'Automated Check',
-          diagnosed: 'System',
+          time: new Date().toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+          }),
+          model: models[Math.floor(Math.random() * models.length)],
+          event: events[Math.floor(Math.random() * events.length)],
+          diagnosed: diagnosers[Math.floor(Math.random() * diagnosers.length)],
           status: `${Math.floor(Math.random() * 10 + 90)}%`,
         };
         return [newEvent, ...prev.slice(0, 4)];
       });
 
-      setHighlight(true);
-      setTimeout(() => setHighlight(false), 500);
+      setRowPulse(true);
+      setTimeout(() => setRowPulse(false), 500);
       onUpdate && onUpdate();
     }, 1000);
     return () => clearInterval(interval);
   }, [onUpdate]);
 
   return (
-    <div className="space-y-10">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div className="space-y-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
-            <div className={`text-3xl font-bold ${stat.color || 'text-white'}`}>{stat.value}</div>
-            <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
+          <div
+            key={index}
+            className="bg-[#171f2e] rounded-xl p-3 flex flex-col justify-between"
+            style={{ width: 180, height: 70, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
+          >
+            <div className="text-[2.1rem] font-bold" style={{ color: stat.color }}>
+              {stat.value}
+            </div>
+            <div className="text-[1.03rem] font-semibold" style={{ color: '#a2acc9' }}>
+              {stat.label}
+            </div>
           </div>
         ))}
+        <div
+          className="bg-[#171f2e] rounded-xl p-3 flex flex-col"
+          style={{ width: 180, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
+        >
+          <Heatmap />
+        </div>
       </div>
 
-      <div className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">AI Inference Flow</h2>
-        <svg viewBox="0 0 600 100" className="w-full h-24">
-          <circle cx="50" cy="50" r="10" fill="#14ffe9" />
-          <line x1="60" y1="50" x2="200" y2="50" stroke="#14ffe9" strokeWidth="2" />
-          <circle
-            cx="210"
-            cy="50"
-            r="20"
-            fill="#14ffe9"
-            className={highlight ? 'animate-ping' : ''}
-          />
-          <line x1="230" y1="50" x2="400" y2="30" stroke="#14ffe9" strokeWidth="2" />
-          <line x1="230" y1="50" x2="400" y2="70" stroke="#14ffe9" strokeWidth="2" />
-          <circle cx="400" cy="30" r="10" fill="#14ffe9" />
-          <circle cx="400" cy="70" r="10" fill="#14ffe9" />
-        </svg>
+      <div className="bg-[#171f2e] rounded-xl p-4" style={{ boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}>
+        <h2 className="text-lg font-semibold mb-3">AI Inference Flow</h2>
+        <InferenceFlow />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {models.map((model, index) => (
-          <div key={index} className="bg-[#1a1f29] rounded-xl p-4 shadow">
-            <div className="text-sm text-gray-400">{model.name}</div>
-            <div className={`text-2xl font-bold ${model.color}`}>{model.percent}</div>
-            <div className="text-xs mt-1">{model.status}</div>
-          </div>
-        ))}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Model Status</h2>
+        <ModelStatus />
       </div>
 
-      <div className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
+      <div className="bg-[#171f2e] rounded-xl p-6" style={{ boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}>
         <h2 className="text-xl font-semibold mb-4">Event Log</h2>
         <table className="w-full text-sm">
           <thead className="text-gray-400 border-b border-gray-700">
@@ -112,7 +108,10 @@ const Dashboard = ({ onUpdate }) => {
           </thead>
           <tbody>
             {events.map((e, index) => (
-              <tr key={index} className="border-b border-gray-800">
+              <tr
+                key={index}
+                className={`border-b border-gray-800 transition-colors hover:bg-[#1e2536] ${index === 0 && rowPulse ? 'bg-[#1e2536]' : ''}`}
+              >
                 <td className="py-2">{e.time}</td>
                 <td className="py-2">{e.model}</td>
                 <td className="py-2">{e.event}</td>
