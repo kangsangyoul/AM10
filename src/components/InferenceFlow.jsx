@@ -30,7 +30,6 @@ const colorFor = (score) => {
 const InferenceFlow = () => {
   const [scores, setScores] = useState(models.map(() => 50));
   const [history, setHistory] = useState([]);
-  const [nodePulses, setNodePulses] = useState(Array(6).fill(1));
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -38,7 +37,6 @@ const InferenceFlow = () => {
       setScores(next);
       const max = next.reduce((p, c, i) => (c > next[p] ? i : p), 0);
       setHistory((h) => [...h.slice(-29), next[max]]);
-      setNodePulses((p) => p.map(() => 1 + Math.random() * 0.15));
     }, 1000);
     return () => clearInterval(id);
   }, []);
@@ -83,15 +81,15 @@ const InferenceFlow = () => {
           <style>{`
             .flow-curve { animation: flowDash 1.2s linear infinite; filter: drop-shadow(0 0 10px #54e9f8cc); }
             @keyframes flowDash { to { stroke-dashoffset: -23; } }
-            .ai { transform-origin: center; animation: aiPulse 1.2s infinite; }
-            @keyframes aiPulse { 0%{transform:scale(1);filter:drop-shadow(0 0 10px #54e9f8);}50%{transform:scale(1.5);filter:drop-shadow(0 0 24px #54e9f8);}100%{transform:scale(1);filter:drop-shadow(0 0 10px #54e9f8);} }
+            .ring { transform-origin: center; animation: ringPulse 1.2s infinite; filter: drop-shadow(0 0 24px #34b4ff88); }
+            @keyframes ringPulse { 0%{transform:scale(1);}50%{transform:scale(1.5);}100%{transform:scale(1);} }
           `}</style>
         </defs>
         {/* Input lines */}
         {models.map((m, i) => {
           const y = positions[i];
           const inputPath = `M 132 ${y} Q 238 ${(y + centerY) / 2 - (2 - i) * 8} 366 ${centerY}`;
-          return <FlowCurve key={`in-${m.key}`} d={inputPath} marker="url(#arrow)" />;
+          return <FlowCurve key={`in-${m.key}`} d={inputPath} />;
         })}
         {/* Output lines */}
         {models.map((m, i) => {
@@ -138,7 +136,9 @@ const InferenceFlow = () => {
           </g>
         ))}
         {/* Central network */}
-        <g transform={`translate(400,${centerY})`} className="ai">
+        <g transform={`translate(400,${centerY})`}>
+          <circle r={36} fill="none" stroke="#34b4ff" strokeWidth="2" className="ring" />
+          <circle r={29} fill="none" stroke="#54e9f8" strokeWidth="2" opacity="0.5" />
           <circle cx="0" cy="0" r="3" fill="#54e9f8" />
           {Array.from({ length: 6 }).map((_, i) => {
             const angle = (i / 6) * 2 * Math.PI;
@@ -147,13 +147,7 @@ const InferenceFlow = () => {
             return (
               <g key={i}>
                 <line x1="0" y1="0" x2={x} y2={y} stroke="#54e9f8" strokeWidth="2" />
-                <circle
-                  cx={x}
-                  cy={y}
-                  r={4 * nodePulses[i]}
-                  fill="#54e9f8"
-                  style={{ transition: 'transform 0.3s' }}
-                />
+                <circle cx={x} cy={y} r={4} fill="#54e9f8" />
               </g>
             );
           })}
