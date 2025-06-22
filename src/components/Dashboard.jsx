@@ -77,10 +77,9 @@ const Dashboard = ({ onUpdate }) => {
           </div>
         ))}
         <div
-          className="bg-[#171f2e] rounded-xl p-4 flex flex-col items-center justify-center"
+          className="bg-[#171f2e] rounded-xl p-4 flex flex-col"
           style={{ width: 210, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
         >
-          <h2 className="text-sm font-semibold mb-2">Risk Heatmap</h2>
           <Heatmap />
         </div>
       </div>

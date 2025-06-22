@@ -1,40 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import RiskGauge from './RiskGauge';
-
-const Sparkline = ({ data }) => {
-  const points = data
-    .map((v, i) => `${(i / (data.length - 1)) * 100},${100 - v}`)
-    .join(' ');
-  return (
-    <svg viewBox="0 0 100 100" className="w-32 h-16">
-      <polyline
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        points={points}
-      />
-    </svg>
-  );
-};
 
 const InferenceFlow = () => {
-  const [history, setHistory] = useState([50]);
+  const [score, setScore] = useState(50);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setHistory((h) => {
-        const next = Math.floor(Math.random() * 101);
-        return [...h.slice(-19), next];
-      });
+      setScore(Math.floor(Math.random() * 101));
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  const score = history[history.length - 1];
-
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-      <svg viewBox="0 0 600 140" className="w-full h-36 flex-1">
+    <div className="flex flex-col items-center">
+      <svg viewBox="0 0 600 140" width="100%" height="140" style={{ display: 'block' }}>
         <defs>
           <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
             <feGaussianBlur stdDeviation="6" result="coloredBlur" />
@@ -54,9 +32,7 @@ const InferenceFlow = () => {
           x="40"
           y="102"
           textAnchor="middle"
-          fontSize="14.7"
-          fontWeight="bold"
-          fill="#a2acc9"
+          style={{ fontSize: '0.92rem', fontWeight: 'bold', fill: '#a2acc9', fontFamily: 'Pretendard, sans-serif' }}
         >
           Input Data
         </text>
@@ -101,9 +77,7 @@ const InferenceFlow = () => {
           x="320"
           y="70"
           textAnchor="middle"
-          fontSize="16.3"
-          fontWeight="bold"
-          fill="#fff"
+          style={{ fontSize: '1.02rem', fontWeight: 'bold', fill: '#fff', fontFamily: 'Pretendard, sans-serif' }}
         >
           AI Model
         </text>
@@ -111,10 +85,7 @@ const InferenceFlow = () => {
           x="320"
           y="108"
           textAnchor="middle"
-          fontSize="32"
-          fontWeight="bold"
-          fill="url(#riskGrad)"
-          style={{ transition: '0.5s' }}
+          style={{ fontSize: '2rem', fontWeight: 'bold', fill: 'url(#riskGrad)', fontFamily: 'Pretendard, sans-serif', transition: '0.5s' }}
         >
           {score}
         </text>
@@ -128,17 +99,11 @@ const InferenceFlow = () => {
           x="575"
           y="102"
           textAnchor="middle"
-          fontSize="14.7"
-          fontWeight="bold"
-          fill="#a2acc9"
+          style={{ fontSize: '0.92rem', fontWeight: 'bold', fill: '#a2acc9', fontFamily: 'Pretendard, sans-serif' }}
         >
           Output
         </text>
       </svg>
-      <div className="flex items-center gap-4">
-        <RiskGauge score={score} />
-        <Sparkline data={history} />
-      </div>
     </div>
   );
 };
