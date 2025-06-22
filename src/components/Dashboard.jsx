@@ -1,32 +1,26 @@
 
 import React, { useState, useEffect } from 'react';
+import InferenceFlow from './InferenceFlow';
+import ModelStatus from './ModelStatus';
+import Heatmap from './Heatmap';
 
 const initialStats = [
-  { label: 'AI Models', value: 52 },
-  { label: 'At Risk Models', value: 9, color: 'text-red-400' },
-  { label: 'AI-Flagged Issues', value: 5478 },
-  { label: 'Data Drift Detected', value: 21 },
+  { label: 'AI Models', value: 52, bg: 'bg-blue-900', text: 'text-blue-200' },
+  { label: 'At Risk Models', value: 9, bg: 'bg-yellow-900', text: 'text-yellow-200' },
+  { label: 'Data Drift Detected', value: 21, bg: 'bg-red-900', text: 'text-red-200' },
 ];
 
-const models = [
-  { name: 'Model A', percent: '52.5%', status: 'Active', color: 'text-cyan-400' },
-  { name: 'Model B', percent: '68%', status: 'AI Risk', color: 'text-yellow-400' },
-  { name: 'Model C', percent: '74%', status: 'Drift', color: 'text-orange-400' },
-  { name: 'Model D', percent: '58%', status: 'Aclotty', color: 'text-blue-400' },
-  { name: 'Model E', percent: '55%', status: 'AI Atleutt', color: 'text-red-400' },
-  { name: 'Model F', percent: '54%', status: 'High', color: 'text-red-500' },
-];
 
 const initialEvents = [
-  { time: '14:03', model: 'Model A', event: 'High Drift', diagnosed: 'AI', status: '82%' },
-  { time: '13:58', model: 'Model B', event: 'Anomalous Input', diagnosed: 'AI Autaltide', status: '83%' },
-  { time: '19:58', model: 'Model D', event: 'Data Drift', diagnosed: 'AI Automatb', status: '84%' },
+  { time: '2:03 PM', model: 'Fraud Detector', event: 'High Drift', diagnosed: 'System Monitor', status: '82%' },
+  { time: '1:58 PM', model: 'Recommendation', event: 'Anomalous Input', diagnosed: 'Human Review', status: '83%' },
+  { time: '9:58 AM', model: 'Language Model', event: 'Data Drift', diagnosed: 'System Monitor', status: '84%' },
 ];
 
 const Dashboard = ({ onUpdate }) => {
   const [stats, setStats] = useState(initialStats);
   const [events, setEvents] = useState(initialEvents);
-  const [highlight, setHighlight] = useState(false);
+  const [rowPulse, setRowPulse] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,8 +36,12 @@ const Dashboard = ({ onUpdate }) => {
 
       setEvents((prev) => {
         const newEvent = {
-          time: new Date().toLocaleTimeString().slice(0, 5),
-          model: 'Model X',
+          time: new Date().toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+          }),
+          model: 'Fraud Detector',
           event: 'Automated Check',
           diagnosed: 'System',
           status: `${Math.floor(Math.random() * 10 + 90)}%`,
@@ -51,8 +49,8 @@ const Dashboard = ({ onUpdate }) => {
         return [newEvent, ...prev.slice(0, 4)];
       });
 
-      setHighlight(true);
-      setTimeout(() => setHighlight(false), 500);
+      setRowPulse(true);
+      setTimeout(() => setRowPulse(false), 500);
       onUpdate && onUpdate();
     }, 1000);
     return () => clearInterval(interval);
@@ -60,42 +58,27 @@ const Dashboard = ({ onUpdate }) => {
 
   return (
     <div className="space-y-10">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
-            <div className={`text-3xl font-bold ${stat.color || 'text-white'}`}>{stat.value}</div>
-            <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
+          <div key={index} className={`${stat.bg} rounded-xl p-6 shadow-lg`}>
+            <div className={`text-3xl font-bold ${stat.text}`}>{stat.value}</div>
+            <div className="text-sm text-gray-300 mt-1">{stat.label}</div>
           </div>
         ))}
+        <div className="bg-[#1a1f29] rounded-xl p-4 shadow-lg flex flex-col items-center justify-center">
+          <h2 className="text-sm font-semibold mb-2">Risk Heatmap</h2>
+          <Heatmap />
+        </div>
       </div>
 
       <div className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
         <h2 className="text-xl font-semibold mb-4">AI Inference Flow</h2>
-        <svg viewBox="0 0 600 100" className="w-full h-24">
-          <circle cx="50" cy="50" r="10" fill="#14ffe9" />
-          <line x1="60" y1="50" x2="200" y2="50" stroke="#14ffe9" strokeWidth="2" />
-          <circle
-            cx="210"
-            cy="50"
-            r="20"
-            fill="#14ffe9"
-            className={highlight ? 'animate-ping' : ''}
-          />
-          <line x1="230" y1="50" x2="400" y2="30" stroke="#14ffe9" strokeWidth="2" />
-          <line x1="230" y1="50" x2="400" y2="70" stroke="#14ffe9" strokeWidth="2" />
-          <circle cx="400" cy="30" r="10" fill="#14ffe9" />
-          <circle cx="400" cy="70" r="10" fill="#14ffe9" />
-        </svg>
+        <InferenceFlow />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {models.map((model, index) => (
-          <div key={index} className="bg-[#1a1f29] rounded-xl p-4 shadow">
-            <div className="text-sm text-gray-400">{model.name}</div>
-            <div className={`text-2xl font-bold ${model.color}`}>{model.percent}</div>
-            <div className="text-xs mt-1">{model.status}</div>
-          </div>
-        ))}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Model Status</h2>
+        <ModelStatus />
       </div>
 
       <div className="bg-[#1a1f29] rounded-xl p-6 shadow-lg">
@@ -112,7 +95,10 @@ const Dashboard = ({ onUpdate }) => {
           </thead>
           <tbody>
             {events.map((e, index) => (
-              <tr key={index} className="border-b border-gray-800">
+              <tr
+                key={index}
+                className={`border-b border-gray-800 ${index === 0 && rowPulse ? 'bg-gray-800' : ''}`}
+              >
                 <td className="py-2">{e.time}</td>
                 <td className="py-2">{e.model}</td>
                 <td className="py-2">{e.event}</td>
