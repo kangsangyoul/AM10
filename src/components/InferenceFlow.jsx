@@ -80,15 +80,20 @@ const InferenceFlow = ({ onAlert }) => {
 
   const maxIndex = scores.reduce((p, c, i) => (c > scores[p] ? i : p), 0);
 
-  const centerY = 150;
-  const iconStartY = 70;
+  // Shift the entire flow upwards by roughly 1cm (~38px)
+  const offsetY = -38;
+  const centerY = 150 + offsetY;
+  const iconStartY = 70 + offsetY;
   const iconSpacing = 40;
   const positions = models.map((_, i) => iconStartY + i * iconSpacing);
   const shiftX = -30; // move entire flow 30px to the left
   const centerX = 370 + shiftX; // central network position after shift
 
   return (
-    <div className="flex items-center justify-center font-[Pretendard,sans-serif] text-xs">
+    <div
+      className="flex items-center justify-center font-[Pretendard,sans-serif] text-xs"
+      style={{ marginTop: `${offsetY}px` }}
+    >
       <svg viewBox="0 0 800 300" width="100%" height="300" className="block">
         <defs>
           <linearGradient id="emerald" x1="0" y1="0" x2="1" y2="0">
