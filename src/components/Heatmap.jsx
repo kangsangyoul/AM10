@@ -15,8 +15,8 @@ const generateCells = () =>
   }));
 
 const getColor = (value) => {
-  if (value > 80) return '#ff5a47';
-  if (value > 50) return '#54a7f8';
+  if (value >= 81) return '#ff5a47';
+  if (value >= 51) return '#54a7f8';
   return '#233a56';
 };
 

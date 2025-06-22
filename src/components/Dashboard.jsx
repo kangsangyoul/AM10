@@ -5,9 +5,10 @@ import ModelStatus from './ModelStatus';
 import Heatmap from './Heatmap';
 
 const initialStats = [
-  { label: 'AI Models', value: 52, color: '#ffffff' },
-  { label: 'At Risk Models', value: 9, color: '#ff5a47' },
-  { label: 'AI-Flagged Issues', value: 5478, color: '#ffffff' },
+  { label: 'AI Models', key: 'models', value: 52, color: '#ffffff' },
+  { label: 'At Risk Models', key: 'atRisk', value: 9, color: '#ff5a47' },
+  { label: 'AI-Flagged Issues', key: 'flaggedIssues', value: 5478, color: '#ffffff' },
+  { label: 'Data Drift Detected', key: 'dataDrift', value: 21, color: '#ffffff' },
 ];
 
 
@@ -61,7 +62,7 @@ const Dashboard = ({ onUpdate }) => {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {stats.map((stat, index) => (
           <div
             key={index}
