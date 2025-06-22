@@ -171,7 +171,7 @@ const InferenceFlow = ({ onAlert }) => {
             <RiskBadgeCard
               score={scores[i]}
               state={getState(scores[i])}
-              x={745 + shiftX}
+              x={802 + shiftX}
               y={positions[i] - 16}
               highlight={i === maxIndex}
             />
