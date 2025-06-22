@@ -29,10 +29,14 @@ const colorFor = (score) => {
 
 const InferenceFlow = () => {
   const [scores, setScores] = useState(models.map(() => 50));
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     const id = setInterval(() => {
-      setScores(models.map(() => Math.floor(Math.random() * 101)));
+      const next = models.map(() => Math.floor(Math.random() * 101));
+      setScores(next);
+      const max = next.reduce((p, c, i) => (c > next[p] ? i : p), 0);
+      setHistory((h) => [...h.slice(-29), next[max]]);
     }, 1000);
     return () => clearInterval(id);
   }, []);
@@ -62,6 +66,9 @@ const InferenceFlow = () => {
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <marker id="arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L6 3 L0 6 Z" fill="#4dd9ff" />
+          </marker>
           <style>{`
             .flow-curve { animation: flowDash 1.2s linear infinite; filter: drop-shadow(0 0 10px #54e9f8cc); }
             @keyframes flowDash { to { stroke-dashoffset: -23; } }
@@ -85,6 +92,7 @@ const InferenceFlow = () => {
               d={outputPath}
               color={colorFor(scores[i])}
               width={scores[i] >= 80 ? 6 : 4}
+              marker="url(#arrow)"
             />
           );
         })}
@@ -136,6 +144,14 @@ const InferenceFlow = () => {
       </svg>
       <div className="ml-4 flex items-center space-x-4">
         <RiskGauge score={scores[maxIndex]} />
+        <svg width="100" height="40" className="text-[#4dd9ff]">
+          <polyline
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            points={history.map((v, i) => `${i * 3},${40 - (v / 100) * 40}`).join(' ')}
+          />
+        </svg>
         <DangerScoreCard score={scores[maxIndex]} state={getState(scores[maxIndex])} />
       </div>
     </div>
