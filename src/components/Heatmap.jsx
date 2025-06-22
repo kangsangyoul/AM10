@@ -56,12 +56,15 @@ const Heatmap = () => {
   return (
     <div className="text-white font-[Pretendard,sans-serif]">
       <div className="flex justify-between items-center mb-2 text-sm font-bold">
-        <span>실시간 AI 리스크 히트맵</span>
+        <div className="leading-tight">
+          <div>AI Risk</div>
+          <div>HeatMap</div>
+        </div>
         <span className="text-[#a2acc9] text-[0.85rem]">Updated: {lastUpdate}</span>
       </div>
       <div
         className="grid grid-cols-5"
-        style={{ width: 140, height: 140, gap: 4 }}
+        style={{ width: 150, height: 150, gap: 4 }}
       >
         {cells.map((cell, i) => (
           <div

@@ -7,9 +7,9 @@ import RiskGauge from './RiskGauge';
 
 const models = [
   { key: 'fraud', label: 'Fraud', icon: FiShield },
-  { key: 'reco', label: 'Reco', icon: FiStar },
+  { key: 'recommendation', label: 'Recommendation', icon: FiStar },
   { key: 'anomaly', label: 'Anomaly', icon: FiAlertTriangle },
-  { key: 'lang', label: 'Lang', icon: FiBook },
+  { key: 'language', label: 'Language', icon: FiBook },
   { key: 'vision', label: 'Vision', icon: FiEye },
   { key: 'forecast', label: 'Forecast', icon: FiBarChart2 },
 ];
@@ -149,7 +149,7 @@ const InferenceFlow = () => {
           })}
         </g>
       </svg>
-      <div className="ml-[-60px] scale-[1.15] flex flex-col items-center">
+      <div className="ml-[-40px] scale-[1.15] flex flex-col items-center">
         <span className="text-[1.1rem] font-bold text-[#a2acc9] mb-1">Risk Score</span>
         <RiskGauge score={scores[maxIndex]} />
       </div>

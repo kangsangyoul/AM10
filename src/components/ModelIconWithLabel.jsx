@@ -13,7 +13,7 @@ const ModelIconWithLabel = ({ Icon, label, x, y, align = 'center', pulse = 1 }) 
       <Icon x="-10" y="-10" size={20} color="#131926" />
     </g>
     <text
-      x={align === 'left' ? -18 : align === 'right' ? 18 : 0}
+      x={align === 'left' ? -24 : align === 'right' ? 24 : 0}
       y="34"
       textAnchor={align === 'left' ? 'end' : align === 'right' ? 'start' : 'middle'}
       fontSize="11"
