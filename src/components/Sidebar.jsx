@@ -12,7 +12,7 @@ const items = [
 
 const Sidebar = ({ activeItem, onSelect }) => {
   return (
-    <aside className="w-64 bg-[#1a2235] p-6 space-y-4">
+    <aside className="w-[240px] bg-[#1a2235] p-6 space-y-4">
       <div className="flex items-center text-2xl font-bold mb-8">
         <svg
           className="w-10 h-10 drop-shadow-lg"

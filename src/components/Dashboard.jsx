@@ -8,7 +8,6 @@ const initialStats = [
   { label: 'AI Models', value: 52, color: '#ffffff' },
   { label: 'At Risk Models', value: 9, color: '#ff5a47' },
   { label: 'AI-Flagged Issues', value: 5478, color: '#ffffff' },
-  { label: 'Data Drift Detected', value: 21, color: '#ffffff' },
 ];
 
 
@@ -62,11 +61,12 @@ const Dashboard = ({ onUpdate }) => {
 
   return (
     <div className="space-y-10">
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-[#171f2e] rounded-xl p-6 shadow-lg flex flex-col justify-between"
+            className="bg-[#171f2e] rounded-xl p-6 flex flex-col justify-between"
+            style={{ width: 210, height: 90, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
           >
             <div className="text-[2.4rem] font-bold" style={{ color: stat.color }}>
               {stat.value}
@@ -76,13 +76,16 @@ const Dashboard = ({ onUpdate }) => {
             </div>
           </div>
         ))}
-        <div className="bg-[#171f2e] rounded-xl p-4 shadow-lg flex flex-col items-center justify-center">
+        <div
+          className="bg-[#171f2e] rounded-xl p-4 flex flex-col items-center justify-center"
+          style={{ width: 210, boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}
+        >
           <h2 className="text-sm font-semibold mb-2">Risk Heatmap</h2>
           <Heatmap />
         </div>
       </div>
 
-      <div className="bg-[#171f2e] rounded-xl p-6 shadow-lg">
+      <div className="bg-[#171f2e] rounded-xl p-6" style={{ boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}>
         <h2 className="text-xl font-semibold mb-4">AI Inference Flow</h2>
         <InferenceFlow />
       </div>
@@ -92,7 +95,7 @@ const Dashboard = ({ onUpdate }) => {
         <ModelStatus />
       </div>
 
-      <div className="bg-[#171f2e] rounded-xl p-6 shadow-lg">
+      <div className="bg-[#171f2e] rounded-xl p-6" style={{ boxShadow: '0 2px 16px rgba(22,28,38,0.4)' }}>
         <h2 className="text-xl font-semibold mb-4">Event Log</h2>
         <table className="w-full text-sm">
           <thead className="text-gray-400 border-b border-gray-700">
