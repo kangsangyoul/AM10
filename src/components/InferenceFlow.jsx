@@ -4,6 +4,7 @@ import FlowCurve from './FlowCurve';
 import ModelIconWithLabel from './ModelIconWithLabel';
 import RiskBadgeCard from './RiskBadgeCard';
 import DangerScoreCard from './DangerScoreCard';
+import RiskGauge from './RiskGauge';
 
 const models = [
   { key: 'fraud', label: 'Fraud', icon: FaShieldAlt },
@@ -38,11 +39,13 @@ const InferenceFlow = () => {
 
   const maxIndex = scores.reduce((p, c, i) => (c > scores[p] ? i : p), 0);
 
-  const positions = [20, 40, 60, 80, 100, 120];
+  const iconStartY = 38;
+  const iconSpacing = 34.6;
+  const positions = models.map((_, i) => iconStartY + i * iconSpacing);
 
   return (
     <div className="flex items-center justify-center font-[Pretendard,sans-serif] text-xs">
-      <svg viewBox="0 0 600 140" width="100%" height="140" className="block">
+      <svg viewBox="0 0 800 210" width="100%" height="210" className="block">
         <defs>
           <linearGradient id="emerald" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#54e9f8" />
@@ -67,30 +70,56 @@ const InferenceFlow = () => {
           `}</style>
         </defs>
         {/* Input lines */}
-        {models.map((m, i) => (
-          <FlowCurve key={`in-${m.key}`} d={`M 70,${positions[i]} Q 220,30 300,70`} />
-        ))}
+        {models.map((m, i) => {
+          const y = positions[i];
+          const inputPath = `M 132 ${y} Q 238 ${(y + 105) / 2 - (2 - i) * 8} 366 105`;
+          return <FlowCurve key={`in-${m.key}`} d={inputPath} />;
+        })}
         {/* Output lines */}
-        {models.map((m, i) => (
-          <FlowCurve
-            key={`out-${m.key}`}
-            d={`M 320,70 Q 480,30 550,${positions[i]}`}
-            color={colorFor(scores[i])}
-          />
-        ))}
+        {models.map((m, i) => {
+          const y = positions[i];
+          const outputPath = `M 434 105 Q 562 ${(y + 105) / 2 + (i - 2) * 8} 690 ${y}`;
+          return (
+            <FlowCurve
+              key={`out-${m.key}`}
+              d={outputPath}
+              color={colorFor(scores[i])}
+              width={scores[i] >= 80 ? 6 : 4}
+            />
+          );
+        })}
         {/* Input icons */}
         {models.map((m, i) => (
-          <ModelIconWithLabel key={`in-icon-${m.key}`} Icon={m.icon} label={m.label} x={50} y={positions[i]} />
+          <ModelIconWithLabel
+            key={`in-icon-${m.key}`}
+            Icon={m.icon}
+            label={m.label}
+            x={110}
+            y={positions[i]}
+            align="left"
+          />
         ))}
         {/* Output icons and badges */}
         {models.map((m, i) => (
-          <g key={`out-icon-${m.key}`}> 
-            <ModelIconWithLabel Icon={m.icon} label={m.label} x={570} y={positions[i]} />
-            <RiskBadgeCard score={scores[i]} state={getState(scores[i])} x={590} y={positions[i]-16} highlight={i===maxIndex} />
+          <g key={`out-icon-${m.key}`}>
+            <ModelIconWithLabel
+              Icon={m.icon}
+              label={m.label}
+              x={690}
+              y={positions[i]}
+              align="right"
+            />
+            <RiskBadgeCard
+              score={scores[i]}
+              state={getState(scores[i])}
+              x={736}
+              y={positions[i] - 16}
+              highlight={i === maxIndex}
+            />
           </g>
         ))}
         {/* Central network */}
-        <g transform="translate(320,70)" className="ai">
+        <g transform="translate(400,105)" className="ai">
           <circle cx="0" cy="0" r="3" fill="#54e9f8" />
           {Array.from({ length: 6 }).map((_, i) => {
             const angle = (i / 6) * 2 * Math.PI;
@@ -105,7 +134,8 @@ const InferenceFlow = () => {
           })}
         </g>
       </svg>
-      <div className="ml-4">
+      <div className="ml-4 flex items-center space-x-4">
+        <RiskGauge score={scores[maxIndex]} />
         <DangerScoreCard score={scores[maxIndex]} state={getState(scores[maxIndex])} />
       </div>
     </div>
