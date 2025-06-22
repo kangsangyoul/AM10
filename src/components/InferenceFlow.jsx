@@ -1,17 +1,56 @@
 import React, { useState, useEffect } from 'react';
 
+const nodeNames = [
+  'Fraud Detector',
+  'Recommendation',
+  'Anomaly Watch',
+  'Language Model',
+  'Vision Classifier',
+  'Forecast Engine',
+];
+
+const genNodes = () =>
+  nodeNames.map((name) => {
+    const value = Math.floor(Math.random() * 101);
+    return {
+      name,
+      value,
+      state: value > 80 ? 'High' : value > 50 ? 'Moderate' : 'Safe',
+      updated: new Date().toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      }),
+    };
+  });
+
 const InferenceFlow = () => {
   const [score, setScore] = useState(50);
+  const [nodes, setNodes] = useState(genNodes());
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setScore(Math.floor(Math.random() * 101));
+      setNodes(genNodes());
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
+  const center = { x: 320, y: 70 };
+  const nodeRadius = 45;
+
+  const coords = (i) => {
+    const angle = (i * 60 * Math.PI) / 180;
+    return {
+      x: center.x + Math.cos(angle) * nodeRadius,
+      y: center.y + Math.sin(angle) * nodeRadius,
+    };
+  };
+
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center font-[Pretendard,sans-serif]">
       <svg viewBox="0 0 600 140" width="100%" height="140" style={{ display: 'block' }}>
         <defs>
           <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
@@ -61,14 +100,35 @@ const InferenceFlow = () => {
             stroke="#34b4ff"
             strokeWidth="4"
           />
-          {[...Array(6)].map((_,i)=>{
-            const angle = (i/6)*Math.PI*2;
-            const x = 320 + Math.cos(angle)*45;
-            const y = 70 + Math.sin(angle)*45;
+          {nodes.map((node, i) => {
+            const { x, y } = coords(i);
             return (
-              <g key={i}>
-                <line x1="320" y1="70" x2={x} y2={y} stroke="#54a7f8" strokeWidth="2" strokeOpacity="0.7" />
-                <circle cx={x} cy={y} r="7" fill="#54a7f8" />
+              <g key={node.name}>
+                <line
+                  x1={center.x}
+                  y1={center.y}
+                  x2={x}
+                  y2={y}
+                  stroke="#54a7f8"
+                  strokeWidth="2"
+                  strokeOpacity="0.7"
+                />
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="7"
+                  fill="#54a7f8"
+                  style={{ transition: 'transform 0.2s' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.18)';
+                    e.currentTarget.style.outline = '#54a7f8 solid 2px';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.outline = 'none';
+                  }}
+                  onClick={() => setSelected(node)}
+                />
               </g>
             );
           })}
@@ -104,6 +164,19 @@ const InferenceFlow = () => {
           Output
         </text>
       </svg>
+      {selected && (
+        <div
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+          onClick={() => setSelected(null)}
+        >
+          <div className="bg-[#171f2e] rounded-xl p-6" style={{ minWidth: 220 }}>
+            <h3 className="text-lg font-semibold mb-2">{selected.name}</h3>
+            <p>Value: {selected.value}</p>
+            <p>Status: {selected.state}</p>
+            <p>Updated: {selected.updated}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

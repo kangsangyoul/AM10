@@ -67,7 +67,7 @@ const Heatmap = () => {
           <div
             key={cell.name}
             onClick={() => openDetail(cell)}
-            className="relative flex items-center justify-center text-[10px] font-medium rounded transition-colors"
+            className="relative flex items-center justify-center text-[10px] font-medium transition-colors"
             style={{
               width: 26,
               height: 26,
@@ -76,6 +76,7 @@ const Heatmap = () => {
               transitionDuration: '0.2s',
               outline: 'none',
               cursor: 'pointer',
+              borderRadius: 6,
             }}
             title={`${cell.name} ${cell.value} @${cell.updated}`}
             onMouseEnter={(e) => (e.currentTarget.style.outline = '#54a7f8 2px solid')}
