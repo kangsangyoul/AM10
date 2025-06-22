@@ -114,6 +114,9 @@ const InferenceFlow = ({ onAlert }) => {
             <stop offset="0%" stopColor="#54e9f8" />
             <stop offset="100%" stopColor="#395cd6" />
           </linearGradient>
+          <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0 0 L6 3 L0 6 Z" fill="#4dd9ff" />
+          </marker>
           <filter id="iconGlow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="b" />
             <feMerge>
@@ -144,6 +147,7 @@ const InferenceFlow = ({ onAlert }) => {
               d={outputPath}
               color={colorFor(scores[i])}
               width={scores[i] >= 80 ? 5 : 3}
+              marker="url(#arrow)"
             />
           );
         })}

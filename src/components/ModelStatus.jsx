@@ -25,7 +25,7 @@ const statusColor = (status) => {
   }
 };
 
-const ModelStatus = () => {
+const ModelStatus = ({ filter = '' }) => {
   const [models, setModels] = useState(initialModels);
 
   useEffect(() => {
@@ -40,9 +40,13 @@ const ModelStatus = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const filtered = models.filter((m) =>
+    m.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      {models.map((model, i) => (
+      {filtered.map((model, i) => (
         <div key={i} className="bg-[#192232] rounded-xl p-4 shadow">
           <div className="text-sm text-gray-400">{model.name}</div>
           <div className="text-2xl font-bold" style={{ color: statusColor(model.status) }}>
