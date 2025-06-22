@@ -20,12 +20,20 @@ const Heatmap = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-5 gap-1 w-40 h-40">
+    <div
+      className="grid grid-cols-5"
+      style={{ width: 146, height: 146, gap: 4 }}
+    >
       {cells.map((v, i) => (
         <div
           key={i}
-          className="relative w-full h-full flex items-center justify-center text-[10px] text-white transition-colors"
-          style={{ backgroundColor: getColor(v), transitionDuration: '0.2s' }}
+          className="relative flex items-center justify-center text-[10px] text-white transition-colors"
+          style={{
+            width: 26,
+            height: 26,
+            backgroundColor: getColor(v),
+            transitionDuration: '0.2s',
+          }}
           title={`${v}%`}
         >
           {v}

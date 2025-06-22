@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 const colorHex = (score) => {
   if (score > 80) return '#ff5a47';
-  if (score > 50) return '#54a7f8';
-  return '#233a56';
+  if (score > 50) return '#ffb534';
+  return '#54a7f8';
 };
 
 const RiskGauge = ({ score: external }) => {

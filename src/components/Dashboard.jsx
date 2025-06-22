@@ -5,16 +5,17 @@ import ModelStatus from './ModelStatus';
 import Heatmap from './Heatmap';
 
 const initialStats = [
-  { label: 'AI Models', value: 52 },
-  { label: 'At Risk Models', value: 9 },
-  { label: 'Data Drift Detected', value: 21 },
+  { label: 'AI Models', value: 52, color: '#ffffff' },
+  { label: 'At Risk Models', value: 9, color: '#ff5a47' },
+  { label: 'AI-Flagged Issues', value: 5478, color: '#ffffff' },
+  { label: 'Data Drift Detected', value: 21, color: '#ffffff' },
 ];
 
 
 const initialEvents = [
-  { time: '2:03 PM', model: 'Fraud Detector', event: 'High Drift', diagnosed: 'System Monitor', status: '82%' },
-  { time: '1:58 PM', model: 'Recommendation', event: 'Anomalous Input', diagnosed: 'Human Review', status: '83%' },
-  { time: '9:58 AM', model: 'Language Model', event: 'Data Drift', diagnosed: 'System Monitor', status: '84%' },
+  { time: '10:12 AM', model: 'Fraud Detector', event: 'Drift Detected', diagnosed: 'System Monitor', status: '91%' },
+  { time: '9:05 AM', model: 'Recommendation', event: 'Spike in Traffic', diagnosed: 'Auto Audit', status: '87%' },
+  { time: '8:43 AM', model: 'Language Model', event: 'High Risk', diagnosed: 'Human Analyst', status: '89%' },
 ];
 
 const Dashboard = ({ onUpdate }) => {
@@ -35,15 +36,18 @@ const Dashboard = ({ onUpdate }) => {
       );
 
       setEvents((prev) => {
+        const models = ['Fraud Detector', 'Recommendation', 'Language Model'];
+        const events = ['Automated Check', 'Data Drift', 'Spike'];
+        const diagnosers = ['System Monitor', 'Auto Audit', 'Human Analyst'];
         const newEvent = {
           time: new Date().toLocaleTimeString('en-US', {
             hour: 'numeric',
             minute: '2-digit',
             hour12: true,
           }),
-          model: 'Fraud Detector',
-          event: 'Automated Check',
-          diagnosed: 'System',
+          model: models[Math.floor(Math.random() * models.length)],
+          event: events[Math.floor(Math.random() * events.length)],
+          diagnosed: diagnosers[Math.floor(Math.random() * diagnosers.length)],
           status: `${Math.floor(Math.random() * 10 + 90)}%`,
         };
         return [newEvent, ...prev.slice(0, 4)];
@@ -58,14 +62,18 @@ const Dashboard = ({ onUpdate }) => {
 
   return (
     <div className="space-y-10">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-[#171f2e] rounded-xl p-6 shadow-lg"
+            className="bg-[#171f2e] rounded-xl p-6 shadow-lg flex flex-col justify-between"
           >
-            <div className="text-3xl font-bold text-white">{stat.value}</div>
-            <div className="text-sm text-gray-300 mt-1">{stat.label}</div>
+            <div className="text-[2.4rem] font-bold" style={{ color: stat.color }}>
+              {stat.value}
+            </div>
+            <div className="text-sm mt-1" style={{ color: '#a2acc9' }}>
+              {stat.label}
+            </div>
           </div>
         ))}
         <div className="bg-[#171f2e] rounded-xl p-4 shadow-lg flex flex-col items-center justify-center">
@@ -100,7 +108,7 @@ const Dashboard = ({ onUpdate }) => {
             {events.map((e, index) => (
               <tr
                 key={index}
-                className={`border-b border-gray-800 ${index === 0 && rowPulse ? 'bg-[#1e2536]' : ''}`}
+                className={`border-b border-gray-800 transition-colors hover:bg-[#1e2536] ${index === 0 && rowPulse ? 'bg-[#1e2536]' : ''}`}
               >
                 <td className="py-2">{e.time}</td>
                 <td className="py-2">{e.model}</td>
