@@ -36,10 +36,10 @@ const InferenceFlow = () => {
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
       <svg viewBox="0 0 600 140" className="w-full h-36 flex-1">
         <defs>
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
+          <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="6" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="blur" />
+              <feMergeNode in="coloredBlur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
@@ -50,11 +50,41 @@ const InferenceFlow = () => {
         </defs>
         <style>{`#path1,#path2,#path3{stroke-dasharray:8 8;animation:dash 1s linear infinite;}@keyframes dash{to{stroke-dashoffset:-16;}}@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 24px #34b4ff;}50%{transform:scale(1.05);box-shadow:0 0 48px #34b4ffcc;}100%{transform:scale(1);box-shadow:0 0 24px #34b4ff;}}.ai-core{animation:pulse 0.8s infinite;}`}</style>
         <circle cx="40" cy="70" r="13" fill="#54a7f8" filter="url(#glow)" />
-        <text x="40" y="92" textAnchor="middle" fontSize="12" fill="#a2acc9">Input Data</text>
-        <path id="path1" d="M53 70 Q150 30 300 70" fill="none" stroke="#54a7f8" strokeWidth="4" />
-        <path d="M53 70 Q150 30 300 70" fill="none" stroke="#54a7f8" strokeWidth="14" opacity="0.22" filter="url(#glow)" />
-        <g filter="url(#glow)">
-          <circle className="ai-core" cx="320" cy="70" r="34" fill="#161c26" stroke="#34b4ff" strokeWidth="4" />
+        <text
+          x="40"
+          y="102"
+          textAnchor="middle"
+          fontSize="14.7"
+          fontWeight="bold"
+          fill="#a2acc9"
+        >
+          Input Data
+        </text>
+        <path
+          id="path1"
+          d="M53 70 Q150 30 300 70"
+          fill="none"
+          stroke="#54a7f8"
+          strokeWidth="4"
+        />
+        <path
+          d="M53 70 Q150 30 300 70"
+          fill="none"
+          stroke="#54a7f8"
+          strokeWidth="14"
+          opacity="0.22"
+          style={{ filter: 'blur(5px)' }}
+        />
+        <g style={{ filter: 'drop-shadow(0 0 24px rgba(52,180,255,0.4))' }}>
+          <circle
+            className="ai-core"
+            cx="320"
+            cy="70"
+            r="34"
+            fill="#161c26"
+            stroke="#34b4ff"
+            strokeWidth="4"
+          />
           {[...Array(6)].map((_,i)=>{
             const angle = (i/6)*Math.PI*2;
             const x = 320 + Math.cos(angle)*45;
@@ -67,15 +97,43 @@ const InferenceFlow = () => {
             );
           })}
         </g>
-        <text x="320" y="66" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#fff">AI Model</text>
-        <text x="320" y="88" textAnchor="middle" fontSize="20" fontWeight="bold" fill="url(#riskGrad)" style={{transition:'0.5s'}}>{score}</text>
+        <text
+          x="320"
+          y="70"
+          textAnchor="middle"
+          fontSize="16.3"
+          fontWeight="bold"
+          fill="#fff"
+        >
+          AI Model
+        </text>
+        <text
+          x="320"
+          y="108"
+          textAnchor="middle"
+          fontSize="32"
+          fontWeight="bold"
+          fill="url(#riskGrad)"
+          style={{ transition: '0.5s' }}
+        >
+          {score}
+        </text>
         <path id="path2" d="M354 70 Q450 10 560 70" fill="none" stroke="#4dd9ff" strokeWidth="4" />
         <path d="M354 70 Q450 10 560 70" fill="none" stroke="#4dd9ff" strokeWidth="10" opacity="0.4" filter="url(#glow)" />
         <path id="path3" d="M354 70 Q450 130 560 70" fill="none" stroke="#4dd9ff" strokeWidth="4" />
         <path d="M354 70 Q450 130 560 70" fill="none" stroke="#4dd9ff" strokeWidth="10" opacity="0.4" filter="url(#glow)" />
         <circle cx="575" cy="60" r="11" fill="#54a7f8" filter="url(#glow)" />
         <circle cx="575" cy="80" r="11" fill="#54a7f8" filter="url(#glow)" />
-        <text x="575" y="105" textAnchor="middle" fontSize="12" fill="#a2acc9">Output</text>
+        <text
+          x="575"
+          y="102"
+          textAnchor="middle"
+          fontSize="14.7"
+          fontWeight="bold"
+          fill="#a2acc9"
+        >
+          Output
+        </text>
       </svg>
       <div className="flex items-center gap-4">
         <RiskGauge score={score} />
