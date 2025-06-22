@@ -28,7 +28,8 @@ const RiskGauge = ({ score: external }) => {
         <svg viewBox="0 0 36 36" className="w-full h-full rotate-[-90deg]" style={{ color: colorHex(score) }}>
           <defs>
             <linearGradient id="riskGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#ffb534" />
+              <stop offset="0%" stopColor="#54a7f8" />
+              <stop offset="50%" stopColor="#ffb534" />
               <stop offset="100%" stopColor="#ff5a47" />
             </linearGradient>
           </defs>
@@ -44,7 +45,7 @@ const RiskGauge = ({ score: external }) => {
             d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831"
             fill="none"
-            stroke={score > 80 ? 'url(#riskGrad)' : 'currentColor'}
+            stroke="url(#riskGrad)"
             strokeWidth="2"
             strokeDasharray={`${score}, 100`}
           />

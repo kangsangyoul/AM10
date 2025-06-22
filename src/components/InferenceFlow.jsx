@@ -135,7 +135,14 @@ const InferenceFlow = ({ onAlert }) => {
         {models.map((m, i) => {
           const y = positions[i];
           const inputPath = `M ${132 + shiftX} ${y} Q ${238 + shiftX} ${(y + centerY) / 2 - (2 - i) * 8}  ${326} ${centerY}`;
-          return <FlowCurve key={`in-${m.key}`} d={inputPath} />;
+          return (
+            <FlowCurve
+              key={`in-${m.key}`}
+              d={inputPath}
+              markerEnd="url(#arrow)"
+              dash="6 6"
+            />
+          );
         })}
         {/* Output lines */}
         {models.map((m, i) => {
@@ -147,7 +154,8 @@ const InferenceFlow = ({ onAlert }) => {
               d={outputPath}
               color={colorFor(scores[i])}
               width={scores[i] >= 80 ? 5 : 3}
-              marker="url(#arrow)"
+              markerEnd="url(#arrow)"
+              dash="6 6"
             />
           );
         })}
@@ -184,8 +192,8 @@ const InferenceFlow = ({ onAlert }) => {
         {/* Central network */}
         <g transform={`translate(${centerX},${centerY})`}>
           <g className="ring-pulse" style={{ transformOrigin: 'center' }}>
-            <circle r={33} stroke="#54e9f8" strokeWidth="2" fill="none" opacity="0.6" />
-            <circle r={33} stroke="#54e9f8" strokeWidth="2" fill="none" />
+            <circle r={36} stroke="#54a7f8" strokeWidth="2" fill="none" opacity="0.6" />
+            <circle r={36} stroke="#54a7f8" strokeWidth="2" fill="none" />
           </g>
           <circle cx="0" cy="0" r="3" fill="#54e9f8" />
           {Array.from({ length: 6 }).map((_, i) => {
