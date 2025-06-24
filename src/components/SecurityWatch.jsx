@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 const securityEvents = [
   { tokenId: 'token-213', location: 'KR', risk: 'High', event: 'Overuse/Key Leak' },
@@ -8,12 +9,13 @@ const securityEvents = [
 
 const SecurityWatch = () => {
   return (
-    <div className="w-full bg-slate-900 text-white p-6 rounded-2xl shadow-xl mt-6">
-      <div className="text-2xl font-semibold pb-4">Security & Token Monitoring</div>
-      <table className="w-full text-left border-t border-slate-700">
-        <thead>
-          <tr className="text-slate-300">
-            <th className="py-2">Token ID</th>
+    <Card className="w-full bg-slate-900 text-white p-6 rounded-2xl shadow-xl mt-6">
+      <CardHeader className="text-2xl font-semibold pb-4">Security & Token Monitoring</CardHeader>
+      <CardContent>
+        <table className="w-full text-left border-t border-slate-700">
+          <thead>
+            <tr className="text-slate-300">
+              <th className="py-2">Token ID</th>
             <th>Region</th>
             <th>Risk Level</th>
             <th>Event</th>
@@ -30,7 +32,8 @@ const SecurityWatch = () => {
           ))}
         </tbody>
       </table>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

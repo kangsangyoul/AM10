@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 const modelStats = [
   { name: 'Fraud Detector', accuracy: 94.8, drift: 2.1, biasScore: 0.3 },
@@ -8,12 +9,13 @@ const modelStats = [
 
 const ModelRisk = () => {
   return (
-    <div className="w-full bg-slate-900 text-white p-6 rounded-2xl shadow-xl mt-6">
-      <div className="text-2xl font-semibold pb-4">Model Risk Monitor</div>
-      <table className="w-full text-left border-t border-slate-700">
-        <thead>
-          <tr className="text-slate-300">
-            <th className="py-2">Model</th>
+    <Card className="w-full bg-slate-900 text-white p-6 rounded-2xl shadow-xl mt-6">
+      <CardHeader className="text-2xl font-semibold pb-4">Model Risk Monitor</CardHeader>
+      <CardContent>
+        <table className="w-full text-left border-t border-slate-700">
+          <thead>
+            <tr className="text-slate-300">
+              <th className="py-2">Model</th>
             <th>Accuracy (%)</th>
             <th>Drift (%)</th>
             <th>Bias Score</th>
@@ -30,7 +32,8 @@ const ModelRisk = () => {
           ))}
         </tbody>
       </table>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

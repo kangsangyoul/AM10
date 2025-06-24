@@ -7,6 +7,7 @@ import APIWatcher from './APIWatcher';
 import ModelRisk from './ModelRisk';
 import SecurityWatch from './SecurityWatch';
 import CostMonitor from './CostMonitor';
+import AlertHub from './AlertHub';
 
 const initialStats = [
   { label: 'AI Models', value: 52 },
@@ -129,6 +130,7 @@ const Dashboard = ({ onUpdate }) => {
 
       <APIWatcher />
       <ModelRisk />
+      <AlertHub />
       <SecurityWatch />
       <CostMonitor />
     </div>

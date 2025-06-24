@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 const mockApiStats = {
   totalCalls: 5481,
@@ -12,18 +13,19 @@ const mockApiStats = {
 
 const APIWatcher = () => {
   return (
-    <div className="w-full bg-slate-900 text-white p-6 rounded-2xl shadow-xl">
-      <div className="text-2xl font-semibold pb-4">API Risk Overview</div>
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="text-lg">✅ Total Calls: {mockApiStats.totalCalls}</div>
-        <div className="text-lg">⚠️ Error Rate: {mockApiStats.errorRate}%</div>
-        <div className="text-lg">📉 Avg Latency: {mockApiStats.avgLatencyMs}ms</div>
-      </div>
-      <div className="pt-2">
-        <h3 className="text-xl font-semibold mb-2">🔍 High Risk Endpoints</h3>
-        <table className="w-full text-left border-t border-slate-700">
-          <thead>
-            <tr className="text-slate-300">
+    <Card className="w-full bg-slate-900 text-white p-6 rounded-2xl shadow-xl">
+      <CardHeader className="text-2xl font-semibold pb-4">API Risk Overview</CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="text-lg">✅ Total Calls: {mockApiStats.totalCalls}</div>
+          <div className="text-lg">⚠️ Error Rate: {mockApiStats.errorRate}%</div>
+          <div className="text-lg">📉 Avg Latency: {mockApiStats.avgLatencyMs}ms</div>
+        </div>
+        <div className="pt-2">
+          <h3 className="text-xl font-semibold mb-2">🔍 High Risk Endpoints</h3>
+          <table className="w-full text-left border-t border-slate-700">
+            <thead>
+              <tr className="text-slate-300">
               <th className="py-2">Endpoint</th>
               <th>Error Rate (%)</th>
               <th>Avg Latency (ms)</th>
@@ -39,8 +41,9 @@ const APIWatcher = () => {
             ))}
           </tbody>
         </table>
-      </div>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
