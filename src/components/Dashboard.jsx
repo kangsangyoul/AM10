@@ -3,6 +3,10 @@ import React, { useState, useEffect } from 'react';
 import RiskGauge from './RiskGauge';
 import ModelStatus from './ModelStatus';
 import Heatmap from './Heatmap';
+import APIWatcher from './APIWatcher';
+import ModelRisk from './ModelRisk';
+import SecurityWatch from './SecurityWatch';
+import CostMonitor from './CostMonitor';
 
 const initialStats = [
   { label: 'AI Models', value: 52 },
@@ -122,6 +126,11 @@ const Dashboard = ({ onUpdate }) => {
           </tbody>
         </table>
       </div>
+
+      <APIWatcher />
+      <ModelRisk />
+      <SecurityWatch />
+      <CostMonitor />
     </div>
   );
 };
