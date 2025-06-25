@@ -14,9 +14,22 @@ const APIWatcher = () => {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    // simulate async load
-    const timer = setTimeout(() => setStats(mockApiStats), 1000);
-    return () => clearTimeout(timer);
+    const loadTimer = setTimeout(() => setStats(mockApiStats), 1000);
+    const interval = setInterval(() => {
+      setStats((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          totalCalls: prev.totalCalls + Math.floor(Math.random() * 50),
+          errorRate: Math.max(0, +(prev.errorRate + (Math.random() - 0.5)).toFixed(1)),
+          avgLatencyMs: prev.avgLatencyMs + Math.round(Math.random() * 20 - 10),
+        };
+      });
+    }, 5000);
+    return () => {
+      clearTimeout(loadTimer);
+      clearInterval(interval);
+    };
   }, []);
 
   if (!stats) {

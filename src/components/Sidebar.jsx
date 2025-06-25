@@ -1,8 +1,9 @@
 import React from 'react';
-import { FaChartBar, FaRobot, FaBell, FaFileAlt, FaCog } from 'react-icons/fa';
+import { FaChartBar, FaRobot, FaBell, FaFileAlt, FaCog, FaShieldAlt } from 'react-icons/fa';
 
 const items = [
   { icon: <FaChartBar />, label: 'Dashboard' },
+  { icon: <FaShieldAlt />, label: 'ARM (AI Risk Manager)' },
   { icon: <FaRobot />, label: 'AI Models' },
   { icon: <FaChartBar />, label: 'Risk Insights' },
   { icon: <FaBell />, label: 'Alerts' },
