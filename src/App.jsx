@@ -7,6 +7,7 @@ import RiskInsights from './components/RiskInsights';
 import AlertsPage from './components/AlertsPage';
 import ReportsPage from './components/ReportsPage';
 import SettingsPage from './components/SettingsPage';
+import ARMPage from './components/ARMPage';
 
 const App = () => {
   const [active, setActive] = useState('Dashboard');
@@ -23,6 +24,8 @@ const App = () => {
         return <ReportsPage />;
       case 'Settings':
         return <SettingsPage />;
+      case 'ARM (AI Risk Manager)':
+        return <ARMPage />;
       default:
         return <Dashboard />;
     }
