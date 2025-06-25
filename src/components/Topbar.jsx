@@ -17,7 +17,10 @@ const Topbar = ({ lastUpdate }) => {
       <h1 className="text-2xl font-semibold">AI Risk Management Dashboard</h1>
       <div className="flex items-center gap-4">
         <span className="text-sm text-gray-400">Updated {elapsed}s ago</span>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg font-medium">
+        <button
+          className="text-white text-sm px-4 py-2 rounded-lg font-medium"
+          style={{ background: 'linear-gradient(90deg,#34b4ff,#54a7f8)' }}
+        >
           Download Report
         </button>
       </div>
