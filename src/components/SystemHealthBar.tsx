@@ -19,9 +19,9 @@ export default function SystemHealthBar() {
   return (
     <div className="bg-slate-900 p-4 rounded-xl shadow">
       <h2 className="text-sm mb-2 text-white">System Health</h2>
-      <div className="w-full bg-slate-800 h-4 rounded">
+      <div className="bg-slate-800 h-4 w-full rounded overflow-hidden">
         <div
-          className={`${barColor} h-4 rounded transition-all`}
+          className={`h-full transition-all duration-500 ${barColor}`}
           style={{ width: `${score}%` }}
         />
       </div>

@@ -24,13 +24,17 @@ export default function AlertHub() {
   return (
     <div className="bg-slate-900 p-4 rounded-xl shadow text-white">
       <h2 className="text-sm text-gray-400 mb-2">🚨 실시간 경고 이벤트</h2>
-      <ul className="space-y-1 text-sm">
-        {alerts.map((msg, idx) => (
-          <li key={idx} className="text-red-400">
-            {msg}
-          </li>
-        ))}
-      </ul>
+      <div className="overflow-hidden whitespace-nowrap text-sm">
+        <div className="inline-block animate-[ticker_15s_linear_infinite] text-red-400">
+          {alerts.join(' / ')}
+        </div>
+      </div>
+      <style>{`
+        @keyframes ticker {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+      `}</style>
     </div>
   );
 }
