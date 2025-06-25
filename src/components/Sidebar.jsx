@@ -5,7 +5,18 @@ const items = [
   { icon: <FaChartBar />, label: 'Dashboard' },
   { icon: <FaRobot />, label: 'AI Models' },
   { icon: <FaChartBar />, label: 'Risk Insights' },
-  { icon: <FaShieldAlt />, label: 'ARM (AI Risk Manager)' },
+  {
+    icon: <FaShieldAlt />,
+    label: 'API Manager',
+    children: [
+      { label: 'Dashboard', key: 'API Manager Dashboard' },
+      { label: 'API Risk', key: 'API Manager API Risk' },
+      { label: 'Traffic Guard', key: 'API Manager Traffic Guard' },
+      { label: 'Token Watch', key: 'API Manager Token Watch' },
+      { label: 'Prompt Filter', key: 'API Manager Prompt Filter' },
+      { label: 'Security Log', key: 'API Manager Security Log' },
+    ],
+  },
   { icon: <FaBell />, label: 'Alerts' },
   { icon: <FaFileAlt />, label: 'Reports' },
   { icon: <FaCog />, label: 'Settings' },
@@ -54,27 +65,41 @@ const Sidebar = ({ activeItem, onSelect }) => {
       </div>
       <nav className="flex flex-col space-y-4">
         {items.map((item) => (
-          <SidebarItem
-            key={item.label}
-            icon={item.icon}
-            label={item.label}
-            active={activeItem === item.label}
-            onClick={() => onSelect(item.label)}
-          />
+          <React.Fragment key={item.label}>
+            <SidebarItem
+              icon={item.icon}
+              label={item.label}
+              active={activeItem === item.label}
+              onClick={() => onSelect(item.label)}
+            />
+            {item.children && (
+              <div className="ml-6 flex flex-col space-y-2">
+                {item.children.map((child) => (
+                  <SidebarItem
+                    key={child.key}
+                    label={child.label}
+                    active={activeItem === child.key}
+                    onClick={() => onSelect(child.key)}
+                    small
+                  />
+                ))}
+              </div>
+            )}
+          </React.Fragment>
         ))}
       </nav>
     </aside>
   );
 };
 
-const SidebarItem = ({ icon, label, active, onClick }) => (
+const SidebarItem = ({ icon, label, active, onClick, small }) => (
   <div
     onClick={onClick}
     className={`flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-[#2a2f3a] ${
       active ? 'bg-[#2a2f3a] font-semibold' : ''
-    }`}
+    } ${small ? 'text-sm ml-4' : ''}`}
   >
-    {icon}
+    {icon && icon}
     <span>{label}</span>
   </div>
 );

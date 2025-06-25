@@ -7,7 +7,12 @@ import RiskInsights from './components/RiskInsights';
 import AlertsPage from './components/AlertsPage';
 import ReportsPage from './components/ReportsPage';
 import SettingsPage from './components/SettingsPage';
-import ARMPage from './components/ARMPage';
+import APIMDashboard from './pages/api-manager/index';
+import APIRiskPage from './pages/api-manager/risk';
+import TrafficPage from './pages/api-manager/traffic';
+import TokenPage from './pages/api-manager/token';
+import PromptPage from './pages/api-manager/prompt';
+import SecurityPage from './pages/api-manager/security';
 
 const App = () => {
   const [active, setActive] = useState('Dashboard');
@@ -24,8 +29,18 @@ const App = () => {
         return <ReportsPage />;
       case 'Settings':
         return <SettingsPage />;
-      case 'ARM (AI Risk Manager)':
-        return <ARMPage />;
+      case 'API Manager Dashboard':
+        return <APIMDashboard />;
+      case 'API Manager API Risk':
+        return <APIRiskPage />;
+      case 'API Manager Traffic Guard':
+        return <TrafficPage />;
+      case 'API Manager Token Watch':
+        return <TokenPage />;
+      case 'API Manager Prompt Filter':
+        return <PromptPage />;
+      case 'API Manager Security Log':
+        return <SecurityPage />;
       default:
         return <Dashboard />;
     }
