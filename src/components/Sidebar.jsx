@@ -22,7 +22,18 @@ const items = [
   { icon: <FaCog />, label: 'Settings' },
 ];
 
+import { useState } from 'react';
+
 const Sidebar = ({ activeItem, onSelect }) => {
+  const [open, setOpen] = useState({});
+
+  const toggle = (label) => {
+    setOpen((o) => ({ ...o, [label]: !o[label] }));
+  };
+
+  const isChildActive = (item) =>
+    item.children && item.children.some((c) => c.key === activeItem);
+
   return (
     <aside className="w-[240px] bg-[#1a2235] p-6 space-y-4">
       <div className="flex items-center text-2xl font-bold mb-8">
@@ -69,10 +80,12 @@ const Sidebar = ({ activeItem, onSelect }) => {
             <SidebarItem
               icon={item.icon}
               label={item.label}
-              active={activeItem === item.label}
-              onClick={() => onSelect(item.label)}
+              active={activeItem === item.label || isChildActive(item)}
+              onClick={() =>
+                item.children ? toggle(item.label) : onSelect(item.label)
+              }
             />
-            {item.children && (
+            {item.children && open[item.label] && (
               <div className="ml-6 flex flex-col space-y-2">
                 {item.children.map((child) => (
                   <SidebarItem

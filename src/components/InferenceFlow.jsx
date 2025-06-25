@@ -139,7 +139,6 @@ const InferenceFlow = ({ onAlert }) => {
             <FlowCurve
               key={`in-${m.key}`}
               d={inputPath}
-              markerEnd="url(#arrow)"
               dash="6 6"
             />
           );
