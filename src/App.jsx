@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import Dashboard from './components/Dashboard';
@@ -8,38 +8,26 @@ import TrafficPage from '../pages/arm/traffic';
 import PromptRisk from '../pages/arm/prompt';
 import ModelRisk from '../pages/arm/model';
 import SecurityPage from '../pages/arm/security';
+import { Routes, Route } from 'react-router-dom';
 
-const App = () => {
-  const [page, setPage] = useState('ARM Overview');
-
-  const renderPage = () => {
-    switch (page) {
-      case 'API Risk':
-        return <ApiRisk />;
-      case 'Traffic Guard':
-        return <TrafficPage />;
-      case 'Prompt Risk':
-        return <PromptRisk />;
-      case 'Model Risk':
-        return <ModelRisk />;
-      case 'Security Watch':
-        return <SecurityPage />;
-      case 'ARM Overview':
-        return <ArmOverview />;
-      default:
-        return <Dashboard />;
-    }
-  };
-
-  return (
-    <div className="flex h-screen bg-[#0e1116] text-white">
-      <Sidebar activeItem={page} onSelect={setPage} />
-      <div className="flex-1 flex flex-col">
-        <Topbar />
-        <main className="p-6 overflow-y-auto">{renderPage()}</main>
-      </div>
+const App = () => (
+  <div className="flex h-screen bg-[#0e1116] text-white">
+    <Sidebar />
+    <div className="flex-1 flex flex-col">
+      <Topbar />
+      <main className="p-6 overflow-y-auto">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/arm" element={<ArmOverview />} />
+          <Route path="/arm/api" element={<ApiRisk />} />
+          <Route path="/arm/traffic" element={<TrafficPage />} />
+          <Route path="/arm/prompt" element={<PromptRisk />} />
+          <Route path="/arm/model" element={<ModelRisk />} />
+          <Route path="/arm/security" element={<SecurityPage />} />
+        </Routes>
+      </main>
     </div>
-  );
-};
+  </div>
+);
 
 export default App;
