@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 interface Row {
   token: string;
   ip: string;
-  req: number;
-  blocked: boolean;
+  rpm: number;
+  limited: boolean;
 }
 
 export default function RateLimitTable() {
@@ -15,8 +15,8 @@ export default function RateLimitTable() {
       const data: Row[] = Array.from({ length: 5 }, (_, i) => ({
         token: `token-${i + 1}`,
         ip: `192.168.0.${i + 1}`,
-        req: Math.floor(Math.random() * 120),
-        blocked: Math.random() > 0.7,
+        rpm: Math.floor(Math.random() * 120),
+        limited: Math.random() > 0.7,
       }));
       setRows(data);
     }, 5000);
@@ -26,7 +26,7 @@ export default function RateLimitTable() {
   return (
     <div className="bg-slate-900 rounded-xl shadow p-4">
       <h2 className="font-semibold mb-2 text-sm">요율 제한 현황</h2>
-      <table className="w-full text-sm">
+      <table className="table-auto w-full text-sm border border-slate-700">
         <thead className="text-gray-400">
           <tr>
             <th className="text-left p-2">Token</th>
@@ -40,8 +40,8 @@ export default function RateLimitTable() {
             <tr key={idx} className="border-t border-slate-700">
               <td className="p-2">{row.token}</td>
               <td className="p-2">{row.ip}</td>
-              <td className="p-2 text-right">{row.req}</td>
-              <td className="p-2 text-center">{row.blocked ? "⛔" : "-"}</td>
+              <td className="p-2 text-right">{row.rpm}</td>
+              <td className="p-2 text-center">{row.limited ? "⛔" : "-"}</td>
             </tr>
           ))}
         </tbody>
