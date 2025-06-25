@@ -117,9 +117,6 @@ const InferenceFlow = ({ onAlert }) => {
           <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0 0 L6 3 L0 6 Z" fill="#4dd9ff" />
           </marker>
-          <marker id="arrowIn" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M6 0 L0 3 L6 6 Z" fill="#54a7f8" />
-          </marker>
           <filter id="iconGlow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="b" />
             <feMerge>
@@ -143,7 +140,6 @@ const InferenceFlow = ({ onAlert }) => {
               key={`in-${m.key}`}
               d={inputPath}
               dash="6 6"
-              markerEnd="url(#arrowIn)"
             />
           );
         })}
