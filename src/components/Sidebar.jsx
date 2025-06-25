@@ -1,17 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaChartBar, FaRobot, FaBell, FaFileAlt, FaCog, FaShieldAlt } from 'react-icons/fa';
 
 const items = [
-  { icon: <FaChartBar />, label: 'Dashboard' },
-  { icon: <FaRobot />, label: 'AI Models' },
-  { icon: <FaChartBar />, label: 'Risk Insights' },
-  { icon: <FaShieldAlt />, label: 'ARM (AI Risk Manager)' },
-  { icon: <FaBell />, label: 'Alerts' },
-  { icon: <FaFileAlt />, label: 'Reports' },
-  { icon: <FaCog />, label: 'Settings' },
+  { icon: <FaChartBar />, label: 'Dashboard', key: 'Dashboard' },
+  { icon: <FaRobot />, label: 'AI Models', key: 'AI Models' },
+  { icon: <FaChartBar />, label: 'Risk Insights', key: 'Risk Insights' },
+  {
+    icon: <FaShieldAlt />,
+    label: 'API Manager',
+    key: 'API Manager',
+    children: [
+      { label: 'Overview', key: 'api-overview' },
+      { label: 'API Risk', key: 'api-risk' },
+      { label: 'Traffic Guard', key: 'traffic-guard' },
+      { label: 'Token Abuse', key: 'token-abuse' },
+      { label: 'Prompt Risk', key: 'prompt-risk' },
+      { label: 'Security Watch', key: 'security-watch' },
+    ],
+  },
+  { icon: <FaBell />, label: 'Alerts', key: 'Alerts' },
+  { icon: <FaFileAlt />, label: 'Reports', key: 'Reports' },
+  { icon: <FaCog />, label: 'Settings', key: 'Settings' },
 ];
 
 const Sidebar = ({ activeItem, onSelect }) => {
+  const [open, setOpen] = useState(true);
   return (
     <aside className="w-[240px] bg-[#1a2235] p-6 space-y-4">
       <div className="flex items-center text-2xl font-bold mb-8">
@@ -52,27 +65,51 @@ const Sidebar = ({ activeItem, onSelect }) => {
         </svg>
         <span className="ml-2">AuditMind</span>
       </div>
-      <nav className="flex flex-col space-y-4">
-        {items.map((item) => (
-          <SidebarItem
-            key={item.label}
-            icon={item.icon}
-            label={item.label}
-            active={activeItem === item.label}
-            onClick={() => onSelect(item.label)}
-          />
-        ))}
+      <nav className="flex flex-col space-y-2">
+        {items.map((item) =>
+          item.children ? (
+            <div key={item.key} className="space-y-1">
+              <SidebarItem
+                icon={item.icon}
+                label={item.label}
+                active={item.children.some((c) => c.key === activeItem)}
+                onClick={() => setOpen(!open)}
+              />
+              {open && (
+                <div className="pl-4 space-y-1">
+                  {item.children.map((ch) => (
+                    <SidebarItem
+                      key={ch.key}
+                      label={ch.label}
+                      active={activeItem === ch.key}
+                      onClick={() => onSelect(ch.key)}
+                      indent
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <SidebarItem
+              key={item.key}
+              icon={item.icon}
+              label={item.label}
+              active={activeItem === item.key}
+              onClick={() => onSelect(item.key)}
+            />
+          )
+        )}
       </nav>
     </aside>
   );
 };
 
-const SidebarItem = ({ icon, label, active, onClick }) => (
+const SidebarItem = ({ icon, label, active, onClick, indent }) => (
   <div
     onClick={onClick}
     className={`flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-[#2a2f3a] ${
       active ? 'bg-[#2a2f3a] font-semibold' : ''
-    }`}
+    } ${indent ? 'pl-5' : ''}`}
   >
     {icon}
     <span>{label}</span>
