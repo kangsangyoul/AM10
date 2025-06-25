@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-const Topbar = ({ lastUpdate }) => {
+const Topbar = ({ lastUpdate = Date.now() }) => {
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
-    const update = () => {
+    const interval = setInterval(() => {
       setElapsed(Math.floor((Date.now() - lastUpdate) / 1000));
-    };
-    update();
-    const interval = setInterval(update, 1000);
+    }, 1000);
     return () => clearInterval(interval);
   }, [lastUpdate]);
 
