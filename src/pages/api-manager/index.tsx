@@ -8,11 +8,11 @@ export default function APIMDashboard() {
   return (
     <div className="p-6 space-y-6 bg-slate-950 text-white min-h-screen">
       <h1 className="text-3xl font-bold">🛡️ API Manager Dashboard</h1>
+      <SystemHealthBar />
       <APICallStatsCard />
       <AlertHub />
       <TrafficGuard />
       <SummaryNavigationCard />
-      <SystemHealthBar />
     </div>
   );
 }
