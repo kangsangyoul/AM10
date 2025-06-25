@@ -2,14 +2,15 @@ import { useState } from "react";
 
 export default function RateLimitConfigPanel() {
   const [limit, setLimit] = useState(100);
+  const [tokenLimit, setTokenLimit] = useState(50);
 
   const save = () => {
-    alert("저장되었습니다 (mock)");
+    console.log({ limit, tokenLimit });
   };
 
   return (
-    <div className="bg-slate-900 rounded-xl shadow p-4 space-y-4">
-      <h2 className="font-semibold text-sm">전체 호출 제한</h2>
+    <div className="bg-slate-900 rounded-xl shadow p-4 space-y-2">
+      <label className="block text-sm font-semibold">전체 호출 제한</label>
       <div className="flex items-center space-x-2">
         <input
           type="range"
@@ -27,6 +28,13 @@ export default function RateLimitConfigPanel() {
         />
         <span className="text-sm">req/min</span>
       </div>
+      <label className="block text-sm font-semibold">단일 토큰 제한</label>
+      <input
+        type="number"
+        className="w-24 text-black rounded px-1 py-0.5"
+        value={tokenLimit}
+        onChange={(e) => setTokenLimit(Number(e.target.value))}
+      />
       <button
         onClick={save}
         className="bg-blue-600 text-white text-sm px-4 py-1 rounded"
