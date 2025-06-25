@@ -3,6 +3,9 @@ import AlertHub from '../../components/AlertHub';
 import TrafficGuard from '../../components/TrafficGuard';
 import SummaryNavigationCard from '../../components/SummaryNavigationCard';
 import SystemHealthBar from '../../components/SystemHealthBar';
+import EventHeatmapGrid from '../../components/EventHeatmapGrid';
+import PulseRing from '../../components/PulseRing';
+import CriticalEventPopup from '../../components/CriticalEventPopup';
 
 export default function APIMDashboard() {
   return (
@@ -11,7 +14,10 @@ export default function APIMDashboard() {
       <SystemHealthBar />
       <APICallStatsCard />
       <AlertHub />
+      <EventHeatmapGrid />
+      <PulseRing />
       <TrafficGuard />
+      <CriticalEventPopup />
       <SummaryNavigationCard />
     </div>
   );
