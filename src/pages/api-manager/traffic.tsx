@@ -1,6 +1,8 @@
 import RateLimitTable from '../../components/RateLimitTable';
 import BlockedClientsList from '../../components/BlockedClientsList';
 import RateLimitConfigPanel from '../../components/RateLimitConfigPanel';
+      <RateLimitConfigPanel />
+import RateLimitConfigPanel from '../../components/RateLimitConfigPanel';
 
 export default function TrafficPage() {
   return (
