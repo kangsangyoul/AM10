@@ -2,11 +2,11 @@ import React from 'react';
 import { FaChartBar, FaRobot, FaBell, FaFileAlt, FaCog, FaShieldAlt } from 'react-icons/fa';
 
 const items = [
-  { icon: <FaChartBar />, label: 'Dashboard' },
-  { icon: <FaRobot />, label: 'AI Models' },
-  { icon: <FaChartBar />, label: 'Risk Insights' },
+  { icon: <FaChartBar className="text-[22px]" />, label: 'Dashboard' },
+  { icon: <FaRobot className="text-[22px]" />, label: 'AI Models' },
+  { icon: <FaChartBar className="text-[22px]" />, label: 'Risk Insights' },
   {
-    icon: <FaShieldAlt />,
+    icon: <FaShieldAlt className="text-[22px]" />,
     label: 'API Manager',
     children: [
       { label: 'Dashboard', key: 'API Manager Dashboard' },
@@ -17,9 +17,9 @@ const items = [
       { label: 'Security Log', key: 'API Manager Security Log' },
     ],
   },
-  { icon: <FaBell />, label: 'Alerts' },
-  { icon: <FaFileAlt />, label: 'Reports' },
-  { icon: <FaCog />, label: 'Settings' },
+  { icon: <FaBell className="text-[22px]" />, label: 'Alerts' },
+  { icon: <FaFileAlt className="text-[22px]" />, label: 'Reports' },
+  { icon: <FaCog className="text-[22px]" />, label: 'Settings' },
 ];
 
 import { useState } from 'react';
@@ -35,8 +35,8 @@ const Sidebar = ({ activeItem, onSelect }) => {
     item.children && item.children.some((c) => c.key === activeItem);
 
   return (
-    <aside className="w-[240px] bg-[#1a2235] p-6 space-y-4">
-      <div className="flex items-center text-2xl font-bold mb-8">
+    <aside className="w-24 bg-[#131823] p-4 space-y-4">
+      <div className="flex items-center text-2xl font-bold mb-8 mt-10">
         <svg
           className="w-10 h-10 drop-shadow-lg"
           viewBox="0 0 56 56"
@@ -108,11 +108,11 @@ const Sidebar = ({ activeItem, onSelect }) => {
 const SidebarItem = ({ icon, label, active, onClick, small }) => (
   <div
     onClick={onClick}
-    className={`flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-[#2a2f3a] ${
-      active ? 'bg-[#2a2f3a] font-semibold' : ''
+    className={`flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-[#182136] ${
+      active ? 'bg-[#1c2232] text-[#8ed0ff]' : 'text-[#6b7ca6]'
     } ${small ? 'text-sm ml-4' : ''}`}
   >
-    {icon && icon}
+    <span className={`${active ? 'text-[#8ed0ff]' : 'text-[#3d5e85]'}`}>{icon}</span>
     <span>{label}</span>
   </div>
 );
