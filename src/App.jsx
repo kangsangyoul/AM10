@@ -47,7 +47,10 @@ const App = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#131926] text-white">
+    <div
+      className="flex min-h-screen rounded-3xl text-white px-10 py-8"
+      style={{ boxShadow: '0px 8px 32px rgba(21,31,68,0.5)' }}
+    >
       <Sidebar activeItem={active} onSelect={setActive} />
       <div className="flex-1 flex flex-col items-center">
         <Topbar />
