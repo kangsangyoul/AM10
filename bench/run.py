@@ -21,13 +21,14 @@ def summarize(j):
 
 def main():
     os.makedirs("/opt/dxt/bench", exist_ok=True)
+    fips = os.getenv("DXT_FIPS_MODE") == "1"
     mnt = summarize(run("/secure_mnt"))
     src = summarize(run("/secure_src"))
     ts = datetime.datetime.now().strftime("%Y%m%d-%H%M")
     report = f"/opt/dxt/bench/report-{ts}.html"
     with open(report, "w") as f:
         f.write("<html><head><script src='https://cdn.jsdelivr.net/npm/chart.js'></script></head><body>")
-        f.write("<h1>Benchmark</h1><table border='1'><tr><th>Target</th><th>Read IOPS</th><th>Write IOPS</th><th>Read Lat</th><th>Write Lat</th></tr>")
+        f.write(f"<h1>Benchmark (FIPS {'ON' if fips else 'OFF'})</h1><table border='1'><tr><th>Target</th><th>Read IOPS</th><th>Write IOPS</th><th>Read Lat</th><th>Write Lat</th></tr>")
         f.write(f"<tr><td>/secure_mnt</td><td>{mnt['read_iops']:.2f}</td><td>{mnt['write_iops']:.2f}</td><td>{mnt['read_lat']:.2f}</td><td>{mnt['write_lat']:.2f}</td></tr>")
         f.write(f"<tr><td>/secure_src</td><td>{src['read_iops']:.2f}</td><td>{src['write_iops']:.2f}</td><td>{src['read_lat']:.2f}</td><td>{src['write_lat']:.2f}</td></tr></table>")
         f.write("<canvas id='chart'></canvas><script>")

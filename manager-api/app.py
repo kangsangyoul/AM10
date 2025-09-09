@@ -16,6 +16,7 @@ RATE_LIMIT = 60  # req/min per token+IP
 _rate_cache: Dict[str, Tuple[int, float]] = {}
 A_LOG = "/opt/dxt/logs/manager-audit.log"
 os.makedirs(os.path.dirname(A_LOG), exist_ok=True)
+FIPS_MODE = os.getenv("DXT_FIPS_MODE") == "1"
 
 app = FastAPI(title="DXT Manager API", version="0.1")
 app.add_middleware(
@@ -73,7 +74,7 @@ def auth(token: str | None):
 
 @app.get("/health")
 def health():
-    return {"ok": True}
+    return {"ok": True, "fips_mode": FIPS_MODE}
 
 @app.get("/ready")
 def ready():

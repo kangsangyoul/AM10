@@ -16,6 +16,9 @@ POLL = int(os.getenv("POLL_INTERVAL", "30"))
 CA_BUNDLE = os.getenv("MANAGER_CA_BUNDLE")
 HEADERS = {"Authorization": JWT, "X-Project-ID": PROJECT_ID}
 MAX_BACKOFF = 300
+FIPS_MODE = os.getenv("DXT_FIPS_MODE") == "1"
+if FIPS_MODE:
+    os.environ.setdefault("OPENSSL_FIPS", "1")
 
 MAGIC_V1 = b"DXT1"
 MAGIC_V2 = b"DXT2"
