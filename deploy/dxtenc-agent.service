@@ -1,0 +1,15 @@
+[Unit]
+Description=DXT FUSE Agent
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+WorkingDirectory=/opt/dxt/agent-fuse
+EnvironmentFile=/opt/dxt/agent-fuse/.env
+ExecStart=/usr/bin/python3 main.py
+Restart=always
+User=root
+# FUSE는 root로 시작(권장: 전용 사용자/권한 분리)
+
+[Install]
+WantedBy=multi-user.target
