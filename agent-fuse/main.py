@@ -11,9 +11,10 @@ MNT = os.getenv("MNT_DIR", "/secure_mnt")
 MANAGER_URLS = os.getenv("MANAGER_URL", "http://127.0.0.1:8080").split(",")
 JWT = os.getenv("MANAGER_JWT", "dev-secret")
 POLICY_ID = os.getenv("POLICY_ID", "pol-main")
+PROJECT_ID = os.getenv("PROJECT_ID", "default")
 POLL = int(os.getenv("POLL_INTERVAL", "30"))
 CA_BUNDLE = os.getenv("MANAGER_CA_BUNDLE")
-HEADERS = {"Authorization": JWT}
+HEADERS = {"Authorization": JWT, "X-Project-ID": PROJECT_ID}
 MAX_BACKOFF = 300
 
 MAGIC_V1 = b"DXT1"

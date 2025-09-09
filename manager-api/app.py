@@ -91,67 +91,73 @@ def ready():
 
 # --- Policies ---
 @app.post("/policies", response_model=PolicyOut)
-def upsert_policy(p: PolicyIn, authorization: str = Header(None)):
+def upsert_policy(p: PolicyIn, authorization: str = Header(None), x_project_id: str = Header("default")):
     payload = auth(authorization)
     require_admin(payload)
+    if p.project_id != x_project_id:
+        raise HTTPException(status_code=400, detail="project mismatch")
     db = SessionLocal()
     db.execute(text("""
-      INSERT INTO policies(id, path, enabled, key_version)
-      VALUES(:id, :path, :enabled, :kv)
-      ON CONFLICT (id) DO UPDATE SET path=:path, enabled=:enabled, key_version=:kv, updated_at=NOW()
-    """), {"id": p.id, "path": p.path, "enabled": p.enabled, "kv": p.key_version})
+      INSERT INTO policies(id, project_id, path, enabled, key_version)
+      VALUES(:id, :proj, :path, :enabled, :kv)
+      ON CONFLICT (id, project_id) DO UPDATE SET path=:path, enabled=:enabled, key_version=:kv, updated_at=NOW()
+    """), {"id": p.id, "proj": p.project_id, "path": p.path, "enabled": p.enabled, "kv": p.key_version})
     db.commit(); db.close()
     return p
 
 @app.get("/policies/{policy_id}", response_model=PolicyOut)
-def get_policy(policy_id: str, authorization: str = Header(None)):
+def get_policy(policy_id: str, authorization: str = Header(None), x_project_id: str = Header("default")):
     auth(authorization)
     db = SessionLocal()
-    r = db.execute(text("SELECT id, path, enabled, key_version FROM policies WHERE id=:id"),
-                   {"id": policy_id}).mappings().first()
+    r = db.execute(text("""SELECT id, path, enabled, key_version, project_id FROM policies
+                         WHERE id=:id AND project_id=:proj"""),
+                   {"id": policy_id, "proj": x_project_id}).mappings().first()
     db.close()
     if not r: raise HTTPException(404, "policy not found")
     return PolicyOut(**r)
 
 # agent pull by path (PoC 단순화)
 @app.get("/policy-by-path")
-def policy_by_path(path: str, authorization: str = Header(None)):
+def policy_by_path(path: str, authorization: str = Header(None), x_project_id: str = Header("default")):
     auth(authorization)
     db = SessionLocal()
-    r = db.execute(text("SELECT id, path, enabled, key_version FROM policies WHERE path=:p"),
-                   {"p": path}).mappings().first()
+    r = db.execute(text("""SELECT id, path, enabled, key_version FROM policies
+                         WHERE path=:p AND project_id=:proj"""),
+                   {"p": path, "proj": x_project_id}).mappings().first()
     db.close()
     if not r: raise HTTPException(404, "policy not found")
     return r
 
 # --- Keys ---
 @app.post("/keys")
-def put_key(k: KeyIn, authorization: str = Header(None)):
+def put_key(k: KeyIn, authorization: str = Header(None), x_project_id: str = Header("default")):
     payload = auth(authorization)
     require_admin(payload)
+    if k.project_id != x_project_id:
+        raise HTTPException(status_code=400, detail="project mismatch")
     db = SessionLocal()
     db.execute(text("""
-      INSERT INTO keys(policy_id, version, key_hex, state)
-      VALUES(:pid, :ver, :key, :st)
-      ON CONFLICT (policy_id, version) DO UPDATE SET key_hex=:key, state=:st
-    """), {"pid": k.policy_id, "ver": k.version, "key": k.key_hex, "st": k.state})
+      INSERT INTO keys(policy_id, project_id, version, key_hex, state)
+      VALUES(:pid, :proj, :ver, :key, :st)
+      ON CONFLICT (policy_id, project_id, version) DO UPDATE SET key_hex=:key, state=:st
+    """), {"pid": k.policy_id, "proj": k.project_id, "ver": k.version, "key": k.key_hex, "st": k.state})
     db.commit(); db.close()
     return {"ok": True}
 
 @app.get("/keys/active")
-def get_active_key(policy_id: str, version: int | None = None, authorization: str = Header(None)):
+def get_active_key(policy_id: str, version: int | None = None, authorization: str = Header(None), x_project_id: str = Header("default")):
     auth(authorization)
     db = SessionLocal()
     if version is None:
         r = db.execute(text("""
           SELECT k.version, k.key_hex FROM keys k
-          JOIN policies p ON p.id=k.policy_id
-          WHERE k.policy_id=:pid AND k.state IN ('ACTIVE','PREVIOUS') AND k.version=p.key_version
-        """), {"pid": policy_id}).mappings().first()
+          JOIN policies p ON p.id=k.policy_id AND p.project_id=k.project_id
+          WHERE k.policy_id=:pid AND k.project_id=:proj AND k.state IN ('ACTIVE','PREVIOUS') AND k.version=p.key_version
+        """), {"pid": policy_id, "proj": x_project_id}).mappings().first()
     else:
         r = db.execute(text("""
-          SELECT version, key_hex FROM keys WHERE policy_id=:pid AND version=:v
-        """), {"pid": policy_id, "v": version}).mappings().first()
+          SELECT version, key_hex FROM keys WHERE policy_id=:pid AND project_id=:proj AND version=:v
+        """), {"pid": policy_id, "proj": x_project_id, "v": version}).mappings().first()
     db.close()
     if not r: raise HTTPException(404, "key not found")
     return r
