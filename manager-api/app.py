@@ -1,14 +1,19 @@
-import os, secrets
-from fastapi import FastAPI, HTTPException, Header
+import os, secrets, time
+from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy import text
 from db import SessionLocal, init_db
-from models import PolicyIn, PolicyOut, KeyIn, AgentIn
+from models import PolicyIn, PolicyOut, KeyIn, AgentIn, AuditIn
 from dotenv import load_dotenv
+import jwt
+from typing import Dict, Tuple
 load_dotenv()
 
-MANAGER_JWT = os.getenv("MANAGER_JWT", "dev-secret")
+JWT_KEYS = os.getenv("MANAGER_JWT_KEYS", "dev-secret").split(",")
+RATE_LIMIT = 60  # req/min per token+IP
+_rate_cache: Dict[str, Tuple[int, float]] = {}
 
 app = FastAPI(title="DXT Manager API", version="0.1")
 app.add_middleware(
@@ -16,17 +21,59 @@ app.add_middleware(
 )
 init_db()
 
-def auth(token: str | None):
-    if token != MANAGER_JWT:
+def decode_token(token: str | None) -> dict:
+    if not token:
         raise HTTPException(status_code=401, detail="unauthorized")
+    for k in JWT_KEYS:
+        try:
+            return jwt.decode(token, k, algorithms=["HS256"])
+        except jwt.InvalidTokenError:
+            continue
+    raise HTTPException(status_code=401, detail="unauthorized")
+
+def require_admin(payload: dict):
+    if payload.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="forbidden")
+
+@app.middleware("http")
+async def limit(request: Request, call_next):
+    token = request.headers.get("Authorization", "")
+    key = f"{request.client.host}:{token}"
+    now = time.time()
+    count, start = _rate_cache.get(key, (0, now))
+    if now - start > 60:
+        count, start = 0, now
+    if count >= RATE_LIMIT:
+        return JSONResponse(status_code=429, content={"detail": "rate limit exceeded"})
+    _rate_cache[key] = (count + 1, start)
+    return await call_next(request)
+
+def auth(token: str | None):
+    return decode_token(token)
 
 @app.get("/health")
-def health(): return {"ok": True}
+def health():
+    return {"ok": True}
+
+@app.get("/ready")
+def ready():
+    db = SessionLocal()
+    try:
+        db.execute(text("SELECT 1"))
+        ok = True
+    except Exception:
+        ok = False
+    finally:
+        db.close()
+    if not ok:
+        raise HTTPException(status_code=500, detail="db unavailable")
+    return {"ok": True}
 
 # --- Policies ---
 @app.post("/policies", response_model=PolicyOut)
 def upsert_policy(p: PolicyIn, authorization: str = Header(None)):
-    auth(authorization)
+    payload = auth(authorization)
+    require_admin(payload)
     db = SessionLocal()
     db.execute(text("""
       INSERT INTO policies(id, path, enabled, key_version)
@@ -60,7 +107,8 @@ def policy_by_path(path: str, authorization: str = Header(None)):
 # --- Keys ---
 @app.post("/keys")
 def put_key(k: KeyIn, authorization: str = Header(None)):
-    auth(authorization)
+    payload = auth(authorization)
+    require_admin(payload)
     db = SessionLocal()
     db.execute(text("""
       INSERT INTO keys(policy_id, version, key_hex, state)
@@ -91,7 +139,8 @@ def get_active_key(policy_id: str, version: int | None = None, authorization: st
 # --- Agents ---
 @app.post("/agents/register")
 def register_agent(a: AgentIn, authorization: str = Header(None)):
-    auth(authorization)
+    payload = auth(authorization)
+    require_admin(payload)
     token = secrets.token_hex(24)
     db = SessionLocal()
     db.execute(text("""
@@ -100,3 +149,26 @@ def register_agent(a: AgentIn, authorization: str = Header(None)):
     """), {"id": a.id, "t": token})
     db.commit(); db.close()
     return {"id": a.id, "token": token}
+
+# --- Audits ---
+@app.post("/audit")
+def post_audit(a: AuditIn, authorization: str = Header(None)):
+    auth(authorization)
+    db = SessionLocal()
+    db.execute(text("""
+      INSERT INTO audits(agent_id, policy_id, path, op, result)
+      VALUES(:aid,:pid,:path,:op,:res)
+    """), {"aid": a.agent_id, "pid": a.policy_id, "path": a.path, "op": a.op, "res": a.result})
+    db.commit(); db.close()
+    return {"ok": True}
+
+@app.get("/audit")
+def get_audit(policy_id: str | None = None, authorization: str = Header(None)):
+    auth(authorization)
+    db = SessionLocal()
+    if policy_id:
+        rows = db.execute(text("SELECT id, ts, agent_id, policy_id, path, op, result FROM audits WHERE policy_id=:p ORDER BY ts DESC"), {"p": policy_id}).mappings().all()
+    else:
+        rows = db.execute(text("SELECT id, ts, agent_id, policy_id, path, op, result FROM audits ORDER BY ts DESC")).mappings().all()
+    db.close()
+    return rows

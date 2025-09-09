@@ -18,3 +18,10 @@ class KeyIn(BaseModel):
 
 class AgentIn(BaseModel):
     id: str
+
+class AuditIn(BaseModel):
+    agent_id: str
+    policy_id: str
+    path: str
+    op: str
+    result: str

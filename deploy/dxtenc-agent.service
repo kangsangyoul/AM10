@@ -8,8 +8,13 @@ WorkingDirectory=/opt/dxt/agent-fuse
 EnvironmentFile=/opt/dxt/agent-fuse/.env
 ExecStart=/usr/bin/python3 main.py
 Restart=always
-User=root
-# FUSE는 root로 시작(권장: 전용 사용자/권한 분리)
+User=dxtsvc
+Group=dxtsvc
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+CapabilityBoundingSet=CAP_SYS_ADMIN
+# FUSE는 root 권한이 필요하여 CAP_SYS_ADMIN 허용
 
 [Install]
 WantedBy=multi-user.target

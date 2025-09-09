@@ -26,3 +26,10 @@ npm run dev
 - 사이드바 메뉴를 클릭해 활성 페이지를 전환할 수 있습니다.
 - 대시보드 통계와 이벤트 로그가 1초마다 임의 값으로 갱신되어 실시간 시뮬레이션을 제공합니다.
 - `InputData` 컴포넌트를 제거하고 자동 데이터 스트림 방식으로 변경했습니다.
+
+## Manager API DB Migration
+
+```bash
+cd manager-api
+alembic upgrade head  # run once to create tables
+```

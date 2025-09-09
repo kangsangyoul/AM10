@@ -1,14 +1,15 @@
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
-import os
+from alembic import op
+import sqlalchemy as sa
 
-DB_URL = os.getenv("DB_URL", "postgresql+psycopg2://dxt:dxtpass@localhost:5432/dxt")
-engine = create_engine(DB_URL, pool_pre_ping=True)
-SessionLocal = sessionmaker(bind=engine)
+revision = '0001'
+down_revision = None
+branch_labels = None
+depends_on = None
 
-def init_db():
-    with engine.begin() as conn:
-        conn.execute(text("""
+
+def upgrade():
+    op.execute(
+        """
         CREATE TABLE IF NOT EXISTS policies(
           id VARCHAR(64) PRIMARY KEY,
           path TEXT NOT NULL,
@@ -38,4 +39,16 @@ def init_db():
           op VARCHAR(16),
           result VARCHAR(16)
         );
-        """))
+        """
+    )
+
+
+def downgrade():
+    op.execute(
+        """
+        DROP TABLE IF EXISTS audits;
+        DROP TABLE IF EXISTS agents;
+        DROP TABLE IF EXISTS keys;
+        DROP TABLE IF EXISTS policies;
+        """
+    )
