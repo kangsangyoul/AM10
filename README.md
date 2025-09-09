@@ -18,6 +18,9 @@ cat /secure_mnt/demo.txt                 # plaintext
 hexdump -C /secure_src/demo.txt | head   # ciphertext
 ```
 
+Policies support an `engine` field (`native` or `opa`) and optional `rego` rules for
+experimental policy-as-code evaluation via the Manager API's `/policy-by-path` endpoint.
+
 ### CLI Usage
 ```bash
 dxtenc-cli policy ls

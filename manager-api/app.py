@@ -99,10 +99,10 @@ def upsert_policy(p: PolicyIn, authorization: str = Header(None), x_project_id: 
         raise HTTPException(status_code=400, detail="project mismatch")
     db = SessionLocal()
     db.execute(text("""
-      INSERT INTO policies(id, project_id, path, enabled, key_version)
-      VALUES(:id, :proj, :path, :enabled, :kv)
-      ON CONFLICT (id, project_id) DO UPDATE SET path=:path, enabled=:enabled, key_version=:kv, updated_at=NOW()
-    """), {"id": p.id, "proj": p.project_id, "path": p.path, "enabled": p.enabled, "kv": p.key_version})
+      INSERT INTO policies(id, project_id, path, enabled, key_version, engine, rego)
+      VALUES(:id, :proj, :path, :enabled, :kv, :engine, :rego)
+      ON CONFLICT (id, project_id) DO UPDATE SET path=:path, enabled=:enabled, key_version=:kv, engine=:engine, rego=:rego, updated_at=NOW()
+    """), {"id": p.id, "proj": p.project_id, "path": p.path, "enabled": p.enabled, "kv": p.key_version, "engine": p.engine, "rego": p.rego})
     db.commit(); db.close()
     return p
 
@@ -110,7 +110,7 @@ def upsert_policy(p: PolicyIn, authorization: str = Header(None), x_project_id: 
 def get_policy(policy_id: str, authorization: str = Header(None), x_project_id: str = Header("default")):
     auth(authorization)
     db = SessionLocal()
-    r = db.execute(text("""SELECT id, path, enabled, key_version, project_id FROM policies
+    r = db.execute(text("""SELECT id, path, enabled, key_version, project_id, engine, rego FROM policies
                          WHERE id=:id AND project_id=:proj"""),
                    {"id": policy_id, "proj": x_project_id}).mappings().first()
     db.close()
@@ -122,11 +122,20 @@ def get_policy(policy_id: str, authorization: str = Header(None), x_project_id: 
 def policy_by_path(path: str, authorization: str = Header(None), x_project_id: str = Header("default")):
     auth(authorization)
     db = SessionLocal()
-    r = db.execute(text("""SELECT id, path, enabled, key_version FROM policies
+    r = db.execute(text("""SELECT id, path, enabled, key_version, engine, rego FROM policies
                          WHERE path=:p AND project_id=:proj"""),
                    {"p": path, "proj": x_project_id}).mappings().first()
     db.close()
-    if not r: raise HTTPException(404, "policy not found")
+    if not r:
+        raise HTTPException(404, "policy not found")
+    if r.get("engine") == "opa" and r.get("rego"):
+        try:
+            allowed = bool(eval(r["rego"], {"path": path}))
+        except Exception:
+            allowed = False
+        r["allowed"] = allowed
+    else:
+        r["allowed"] = True
     return r
 
 # --- Keys ---

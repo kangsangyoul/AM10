@@ -29,6 +29,8 @@ def init_db():
           path TEXT NOT NULL,
           enabled BOOLEAN NOT NULL DEFAULT TRUE,
           key_version INTEGER NOT NULL DEFAULT 1,
+          engine VARCHAR(16) NOT NULL DEFAULT 'native',
+          rego TEXT,
           updated_at TIMESTAMP DEFAULT NOW(),
           PRIMARY KEY(id, project_id)
         );
@@ -56,6 +58,8 @@ def init_db():
           result VARCHAR(16)
         );
         ALTER TABLE policies ADD COLUMN IF NOT EXISTS project_id VARCHAR(64) NOT NULL DEFAULT 'default';
+        ALTER TABLE policies ADD COLUMN IF NOT EXISTS engine VARCHAR(16) NOT NULL DEFAULT 'native';
+        ALTER TABLE policies ADD COLUMN IF NOT EXISTS rego TEXT;
         ALTER TABLE keys ADD COLUMN IF NOT EXISTS project_id VARCHAR(64) NOT NULL DEFAULT 'default';
         CREATE INDEX IF NOT EXISTS idx_policies_project ON policies(project_id);
         CREATE INDEX IF NOT EXISTS idx_keys_project ON keys(project_id);

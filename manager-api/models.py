@@ -7,6 +7,8 @@ class PolicyIn(BaseModel):
     project_id: str = "default"
     enabled: bool = True
     key_version: int = 1
+    engine: str = "native"  # native | opa
+    rego: Optional[str] = None
 
 class PolicyOut(PolicyIn):
     pass
