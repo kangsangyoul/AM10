@@ -1,0 +1,22 @@
+name: release
+on:
+  push:
+    tags:
+      - 'v0.1.*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: build rpm
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+          rpmbuild -ba deploy/dxtenc-all.spec
+      - name: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpm
+          path: RPMS/**/*.rpm
+      - name: test
+        run: python -m py_compile manager-api/app.py agent-fuse/main.py bench/run.py

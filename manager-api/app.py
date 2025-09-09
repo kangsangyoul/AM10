@@ -1,4 +1,4 @@
-import os, secrets, time
+import os, secrets, time, json
 from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -14,6 +14,8 @@ load_dotenv()
 JWT_KEYS = os.getenv("MANAGER_JWT_KEYS", "dev-secret").split(",")
 RATE_LIMIT = 60  # req/min per token+IP
 _rate_cache: Dict[str, Tuple[int, float]] = {}
+A_LOG = "/opt/dxt/logs/manager-audit.log"
+os.makedirs(os.path.dirname(A_LOG), exist_ok=True)
 
 app = FastAPI(title="DXT Manager API", version="0.1")
 app.add_middleware(
@@ -46,7 +48,25 @@ async def limit(request: Request, call_next):
     if count >= RATE_LIMIT:
         return JSONResponse(status_code=429, content={"detail": "rate limit exceeded"})
     _rate_cache[key] = (count + 1, start)
-    return await call_next(request)
+    response = await call_next(request)
+    actor = "?"
+    token = request.headers.get("Authorization")
+    try:
+        actor = decode_token(token).get("role", "?")
+    except Exception:
+        pass
+    line = {
+        "ts": int(time.time()),
+        "ip": request.client.host,
+        "method": request.method,
+        "path": request.url.path,
+        "status": response.status_code,
+        "actor": actor,
+        "bytes": response.headers.get("content-length", "0"),
+    }
+    with open(A_LOG, "a") as f:
+        f.write(json.dumps(line) + "\n")
+    return response
 
 def auth(token: str | None):
     return decode_token(token)
@@ -66,7 +86,7 @@ def ready():
     finally:
         db.close()
     if not ok:
-        raise HTTPException(status_code=500, detail="db unavailable")
+        raise HTTPException(status_code=503, detail="db unavailable")
     return {"ok": True}
 
 # --- Policies ---

@@ -13,8 +13,10 @@ Group=dxtsvc
 NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectSystem=strict
+ProtectHome=yes
 CapabilityBoundingSet=CAP_SYS_ADMIN
 # FUSE는 root 권한이 필요하여 CAP_SYS_ADMIN 허용
+ReadWritePaths=/secure_src /secure_mnt /opt/dxt
 
 [Install]
 WantedBy=multi-user.target

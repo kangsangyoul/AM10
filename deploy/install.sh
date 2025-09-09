@@ -24,7 +24,13 @@ cp -r ../manager-api /opt/dxt/
 cp -r ../agent-fuse /opt/dxt/
 cp -r ../agent-kernel /opt/dxt/
 cp -r ../bench /opt/dxt/ || true
+mkdir -p /opt/dxt/logs /opt/dxt/bin
 chown -R dxtsvc:dxtsvc /opt/dxt
+
+# CLI
+cp ./dxtenc-cli /opt/dxt/bin/
+chmod 755 /opt/dxt/bin/dxtenc-cli
+chown dxtsvc:dxtsvc /opt/dxt/bin/dxtenc-cli
 
 # 파이썬 의존성
 pip3 install -r /opt/dxt/manager-api/requirements.txt
@@ -33,6 +39,7 @@ pip3 install -r /opt/dxt/agent-fuse/requirements.txt
 # .env 준비(기본값 생성)
 [ -f /opt/dxt/manager-api/.env ] || cp /opt/dxt/manager-api/.env.example /opt/dxt/manager-api/.env
 [ -f /opt/dxt/agent-fuse/.env ] || cp /opt/dxt/agent-fuse/.env.example /opt/dxt/agent-fuse/.env
+chmod 600 /opt/dxt/manager-api/.env /opt/dxt/agent-fuse/.env
 
 # 서비스 설치
 cp ./dxtenc-manager.service /etc/systemd/system/

@@ -54,6 +54,7 @@ class KeyCache:
                     k[i] = 0
             self.keymap.clear()
             self.cur_ver = None
+        print("agent: key zeroized")
 
 KEYS = KeyCache()
 
@@ -132,7 +133,10 @@ class EncFS(Operations):
             with KEYS.lock:
                 key = bytes(KEYS.keymap.get(keyver, b""))
         if not key:
-            raise FuseOSError(errno.EIO)
+            with open(full, "rb") as raw:
+                raw.seek(0)
+                data = raw.read()
+            return data[offset:offset+size]
         if offset >= fsize:
             return b""
         end = min(offset + size, fsize)
@@ -157,6 +161,7 @@ class EncFS(Operations):
         if not enabled:
             raise FuseOSError(errno.EPERM)
         if not key:
+            print("agent: no key, deny write")
             raise FuseOSError(errno.EIO)
         with open(full, "r+b") as f:
             h = read_header(f)

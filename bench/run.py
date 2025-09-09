@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-import subprocess, json, datetime, os
+import os, subprocess, json, datetime
 
 
 def run(target: str):
     cmd = ["fio", "--name=bench", f"--directory={target}", "--rw=randrw", "--bs=4k",
-           "--size=256M", "--iodepth=32", "--numjobs=2", "--runtime=30", "--time_based=1", "--output-format=json"]
+           "--size=256M", "--iodepth=32", "--numjobs=2", "--runtime=60", "--time_based=1", "--output-format=json"]
     out = subprocess.check_output(cmd)
     return json.loads(out)
 

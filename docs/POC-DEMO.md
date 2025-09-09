@@ -13,6 +13,9 @@ systemctl status dxtenc-manager dxtenc-agent  # 서비스 확인
 echo "hello" > /secure_mnt/a.txt            # 파일 쓰기
 cat /secure_mnt/a.txt                       # 평문 확인
 hexdump -C /secure_src/a.txt | head          # 암호문 확인(DXT1 헤더)
+cat /secure_mnt/demo.txt                    # --demo 생성 파일 확인
+hexdump -C /secure_src/demo.txt | head      # 암호문 확인
+echo "HTML report at" /opt/dxt/bench/report-*.html
 ```
 
 ## 키 롤오버

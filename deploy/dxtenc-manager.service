@@ -13,7 +13,9 @@ Group=dxtsvc
 NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectSystem=strict
+ProtectHome=yes
 CapabilityBoundingSet=
+ReadWritePaths=/secure_src /secure_mnt /opt/dxt
 
 [Install]
 WantedBy=multi-user.target
