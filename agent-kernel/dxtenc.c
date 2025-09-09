@@ -2,20 +2,10 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/kprobes.h>
-#include <linux/dcache.h>
-#include <linux/path.h>
-#include <linux/limits.h>
-#include <linux/uaccess.h>
-#include <linux/cred.h>
-#include <linux/string.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("DXT");
 MODULE_DESCRIPTION("dxtenc alpha logger");
-
-static char *policy_path = "/secure_src";
-module_param(policy_path, charp, 0644);
-MODULE_PARM_DESC(policy_path, "Path to monitor");
 
 static struct kprobe kp_read = {
     .symbol_name = "vfs_read",
@@ -25,13 +15,7 @@ static struct kprobe kp_write = {
 };
 
 static int handler_pre(struct kprobe *p, struct pt_regs *regs) {
-    struct file *file = (struct file *)regs->di;
-    char buf[PATH_MAX];
-    char *path = d_path(&file->f_path, buf, PATH_MAX);
-    if (!IS_ERR(path) && strncmp(path, policy_path, strlen(policy_path)) == 0) {
-        const char *op = strcmp(p->symbol_name, "vfs_read") == 0 ? "read" : "write";
-        printk(KERN_INFO "dxtenc: op=%s path=%s pid=%d uid=%u\n", op, path, current->pid, __kuid_val(current_uid()));
-    }
+    printk(KERN_INFO "dxtenc: %s called\n", p->symbol_name);
     return 0;
 }
 

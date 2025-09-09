@@ -8,14 +8,7 @@ WorkingDirectory=/opt/dxt/manager-api
 EnvironmentFile=/opt/dxt/manager-api/.env
 ExecStart=/usr/bin/python3 -m uvicorn app:app --host 0.0.0.0 --port 8080
 Restart=always
-User=dxtsvc
-Group=dxtsvc
-NoNewPrivileges=yes
-PrivateTmp=yes
-ProtectSystem=strict
-ProtectHome=yes
-CapabilityBoundingSet=
-ReadWritePaths=/secure_src /secure_mnt /opt/dxt
+User=root
 
 [Install]
 WantedBy=multi-user.target
