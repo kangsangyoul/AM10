@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, errno, time, threading, stat, struct, signal
+import os, errno, time, threading, stat, struct, signal, zlib
 from dotenv import load_dotenv
 import requests
 from fuse import FUSE, Operations, FuseOSError
@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 load_dotenv()
 SRC = os.getenv("SRC_DIR", "/secure_src")
 MNT = os.getenv("MNT_DIR", "/secure_mnt")
-MANAGER = os.getenv("MANAGER_URL", "http://127.0.0.1:8080")
+MANAGER_URLS = os.getenv("MANAGER_URL", "http://127.0.0.1:8080").split(",")
 JWT = os.getenv("MANAGER_JWT", "dev-secret")
 POLICY_ID = os.getenv("POLICY_ID", "pol-main")
 POLL = int(os.getenv("POLL_INTERVAL", "30"))
@@ -16,10 +16,29 @@ CA_BUNDLE = os.getenv("MANAGER_CA_BUNDLE")
 HEADERS = {"Authorization": JWT}
 MAX_BACKOFF = 300
 
-MAGIC = b"DXT1"
-HEADER = struct.Struct(">4sBIIQ")  # magic, ver, keyver, chunk, size
+MAGIC_V1 = b"DXT1"
+MAGIC_V2 = b"DXT2"
+HEADER_V1 = struct.Struct(">4sBIIQ")
+HEADER_V2 = struct.Struct(">4sBIIQB")  # +flags
 CHUNK_META = 12  # nonce
 TAG = 16
+ZSTD = os.getenv("DXT_ZSTD") == "1"
+
+try:
+    import zstandard as zstd
+
+    def zstd_compress(b: bytes) -> bytes:
+        return zstd.ZstdCompressor().compress(b)
+
+    def zstd_decompress(b: bytes) -> bytes:
+        return zstd.ZstdDecompressor().decompress(b)
+except Exception:
+
+    def zstd_compress(b: bytes) -> bytes:
+        return zlib.compress(b)
+
+    def zstd_decompress(b: bytes) -> bytes:
+        return zlib.decompress(b)
 
 class KeyCache:
     def __init__(self):
@@ -31,19 +50,27 @@ class KeyCache:
 
     def poll(self):
         backoff = POLL
-        verify = CA_BUNDLE if MANAGER.startswith("https") else True
+        idx = 0
         while not self.stop:
+            url = MANAGER_URLS[idx % len(MANAGER_URLS)]
+            verify = CA_BUNDLE if url.startswith("https") else True
             try:
-                pol = requests.get(f"{MANAGER}/policies/{POLICY_ID}", headers=HEADERS, timeout=3, verify=verify).json()
+                pol = requests.get(f"{url}/policies/{POLICY_ID}", headers=HEADERS, timeout=3, verify=verify).json()
                 key_ver = pol["key_version"]
                 self.enabled = pol["enabled"]
-                k = requests.get(f"{MANAGER}/keys/active", params={"policy_id": POLICY_ID, "version": key_ver},
+                k = requests.get(f"{url}/keys/active", params={"policy_id": POLICY_ID, "version": key_ver},
                                  headers=HEADERS, timeout=3, verify=verify).json()
                 with self.lock:
                     self.cur_ver = k["version"]
                     self.keymap[self.cur_ver] = bytearray.fromhex(k["key_hex"])
                 backoff = POLL
+                idx += 1  # round-robin on success
+                time.sleep(backoff)
+                continue
             except Exception:
+                idx += 1  # try next URL immediately
+                if idx % len(MANAGER_URLS) != 0:
+                    continue
                 backoff = min(backoff * 2, MAX_BACKOFF)
             time.sleep(backoff)
 
@@ -59,32 +86,48 @@ class KeyCache:
 KEYS = KeyCache()
 
 
-def enc_chunk(data: bytes, key: bytes) -> bytes:
+def enc_chunk(data: bytes, key: bytes, flags: int) -> bytes:
+    if flags & 1:
+        data = zstd_compress(data)
     aes = AESGCM(key)
     nonce = os.urandom(12)
     ct = aes.encrypt(nonce, data, None)
     return nonce + ct
 
 
-def dec_chunk(blob: bytes, key: bytes) -> bytes:
+def dec_chunk(blob: bytes, key: bytes, flags: int) -> bytes:
     nonce = blob[:12]
     ct = blob[12:]
     aes = AESGCM(key)
-    return aes.decrypt(nonce, ct, None)
+    data = aes.decrypt(nonce, ct, None)
+    if flags & 1:
+        data = zstd_decompress(data)
+    return data
 
 
 def read_header(f):
     f.seek(0)
-    h = f.read(HEADER.size)
-    if len(h) != HEADER.size or not h.startswith(MAGIC):
+    prefix = f.read(5)
+    if len(prefix) != 5:
         raise FuseOSError(errno.EIO)
-    magic, ver, keyver, csize, fsize = HEADER.unpack(h)
-    return {"keyver": keyver, "csize": csize, "size": fsize}
+    magic, ver = prefix[:4], prefix[4]
+    if magic == MAGIC_V1 and ver == 1:
+        rest = f.read(HEADER_V1.size - 5)
+        keyver, csize, fsize = struct.unpack(">IIQ", rest)
+        return {"ver": 1, "keyver": keyver, "csize": csize, "size": fsize, "flags": 0}
+    if magic == MAGIC_V2 and ver == 2:
+        rest = f.read(HEADER_V2.size - 5)
+        keyver, csize, flags, fsize = struct.unpack(">IIBQ", rest)
+        return {"ver": 2, "keyver": keyver, "csize": csize, "size": fsize, "flags": flags}
+    raise FuseOSError(errno.EIO)
 
 
-def write_header(f, keyver, csize, fsize):
+def write_header(f, keyver, csize, fsize, flags=0, ver=2):
     f.seek(0)
-    f.write(HEADER.pack(MAGIC, 1, keyver, csize, fsize))
+    if ver == 1:
+        f.write(HEADER_V1.pack(MAGIC_V1, 1, keyver, csize, fsize))
+    else:
+        f.write(HEADER_V2.pack(MAGIC_V2, 2, keyver, csize, flags, fsize))
 
 
 class EncFS(Operations):
@@ -118,39 +161,41 @@ class EncFS(Operations):
         fh = os.open(self._full(path), os.O_WRONLY | os.O_CREAT, mode)
         with KEYS.lock:
             keyver = KEYS.cur_ver or 1
+        flags = 1 if ZSTD else 0
         with os.fdopen(os.dup(fh), "wb") as f:
-            write_header(f, keyver, 4096, 0)
+            write_header(f, keyver, 4096, 0, flags=flags, ver=2)
         return fh
 
-    def _chunk_offset(self, idx, csize):
-        return HEADER.size + idx * (csize + CHUNK_META + TAG)
+    def _chunk_offset(self, idx, csize, ver):
+        hsize = HEADER_V2.size if ver == 2 else HEADER_V1.size
+        return hsize + idx * (csize + CHUNK_META + TAG)
 
     def read(self, path, size, offset, fh):
         full = self._full(path)
         with open(full, "rb") as f:
             h = read_header(f)
-            csize = h["csize"]; fsize = h["size"]; keyver = h["keyver"]
+            csize = h["csize"]; fsize = h["size"]; keyver = h["keyver"]; flags = h["flags"]; ver = h["ver"]
             with KEYS.lock:
                 key = bytes(KEYS.keymap.get(keyver, b""))
-        if not key:
-            with open(full, "rb") as raw:
-                raw.seek(0)
-                data = raw.read()
-            return data[offset:offset+size]
-        if offset >= fsize:
-            return b""
-        end = min(offset + size, fsize)
-        out = bytearray()
-        while offset < end:
-            idx = offset // csize
-            inside = offset % csize
-            f.seek(self._chunk_offset(idx, csize))
-            blob = f.read(csize + CHUNK_META + TAG)
-            plain = dec_chunk(blob[:CHUNK_META + min(csize, fsize - idx*csize) + TAG], key)
-            take = min(end - offset, csize - inside)
-            out.extend(plain[inside:inside+take])
-            offset += take
-        return bytes(out)
+            if not key:
+                f.seek(0)
+                raw = f.read()
+                return raw[offset:offset+size]
+            if offset >= fsize:
+                return b""
+            end = min(offset + size, fsize)
+            out = bytearray()
+            while offset < end:
+                idx = offset // csize
+                inside = offset % csize
+                f.seek(self._chunk_offset(idx, csize, ver))
+                blob = f.read(csize + CHUNK_META + TAG)
+                plen = min(csize, fsize - idx * csize)
+                plain = dec_chunk(blob[:CHUNK_META + plen + TAG], key, flags)
+                take = min(end - offset, csize - inside)
+                out.extend(plain[inside:inside+take])
+                offset += take
+            return bytes(out)
 
     def write(self, path, data, offset, fh):
         full = self._full(path)
@@ -165,7 +210,7 @@ class EncFS(Operations):
             raise FuseOSError(errno.EIO)
         with open(full, "r+b") as f:
             h = read_header(f)
-            csize = h["csize"]; fsize = h["size"]
+            csize = h["csize"]; fsize = h["size"]; flags = h["flags"]; ver = h["ver"]
             chunk_unit = csize + CHUNK_META + TAG
             if keyver != h["keyver"]:
                 h["keyver"] = keyver
@@ -174,31 +219,31 @@ class EncFS(Operations):
             while w < len(data):
                 idx = pos // csize
                 inside = pos % csize
-                f.seek(self._chunk_offset(idx, csize))
+                f.seek(self._chunk_offset(idx, csize, ver))
                 if idx * csize < fsize:
                     blob = f.read(chunk_unit)
-                    plen = min(csize, fsize - idx*csize)
-                    plain = dec_chunk(blob[:CHUNK_META + plen + TAG], key)
+                    plen = min(csize, fsize - idx * csize)
+                    plain = dec_chunk(blob[:CHUNK_META + plen + TAG], key, flags)
                 else:
                     plain = b"\x00" * csize
                 buf = bytearray(plain)
                 take = min(len(data) - w, csize - inside)
                 buf[inside:inside+take] = data[w:w+take]
-                f.seek(self._chunk_offset(idx, csize))
-                f.write(enc_chunk(bytes(buf), key))
+                f.seek(self._chunk_offset(idx, csize, ver))
+                f.write(enc_chunk(bytes(buf), key, flags))
                 pos += take
                 w += take
             new_size = max(fsize, offset + len(data))
-            write_header(f, h["keyver"], csize, new_size)
+            write_header(f, h["keyver"], csize, new_size, flags=flags, ver=ver)
         return len(data)
 
     def truncate(self, path, length, fh=None):
         full = self._full(path)
         with open(full, "r+b") as f:
             h = read_header(f)
-            csize = h["csize"]
-            write_header(f, h["keyver"], csize, length)
-            f.truncate(self._chunk_offset((length + csize -1)//csize, csize))
+            csize = h["csize"]; ver = h["ver"]; flags = h["flags"]
+            write_header(f, h["keyver"], csize, length, flags=flags, ver=ver)
+            f.truncate(self._chunk_offset((length + csize -1)//csize, csize, ver))
 
     def unlink(self, path): return os.unlink(self._full(path))
     def mkdir(self, path, mode): return os.mkdir(self._full(path), mode)
