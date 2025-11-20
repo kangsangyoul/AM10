@@ -49,7 +49,7 @@ const Dashboard = ({ onUpdate }) => {
       setHighlight(true);
       setTimeout(() => setHighlight(false), 500);
       onUpdate && onUpdate();
-    }, 1000);
+    }, 1500);
     return () => clearInterval(interval);
   }, [onUpdate]);
 
